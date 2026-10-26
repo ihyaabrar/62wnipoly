@@ -90,7 +90,7 @@ export function taxOffice() {
   );
   coin.position.set(0.85, 2.6, 0.2);
   g.add(cyl(0.02, 0.02, 0.4, C.concrete, [0.85, 2.15, 0.2]), coin);
-  return onUpdate(g, (t) => (coin.rotation.y = t * 2));
+  return onUpdate(g, (t) => (coin.rotation.y = t * 2), [coin]);
 }
 
 /** Rumah sakit penuh: antrean berobat sampai luar gedung. */

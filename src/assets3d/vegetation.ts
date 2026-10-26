@@ -112,7 +112,7 @@ export function tropicalPalm(seed = 1, oil = false) {
   g.add(top);
   return onUpdate(g, (t) => {
     top.rotation.z = Math.sin(t * 0.9 + seed) * 0.025;
-  });
+  }, [top]);
 }
 
 export function tropicalStump() {

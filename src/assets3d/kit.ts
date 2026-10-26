@@ -185,7 +185,16 @@ export function group(name: string, ...children: THREE.Object3D[]) {
 /** Fungsi animasi per aset, dipanggil tiap frame oleh viewer/game. */
 export type Updater = (t: number, dt: number) => void;
 
-export function onUpdate<T extends THREE.Object3D>(obj: T, fn: Updater): T {
+/**
+ * `movers`: bagian yang benar-benar digerakkan fn. Sisanya tetap statis dan boleh digabung bakeStatic.
+ * Tanpa `movers`, seluruh subtree dianggap bergerak.
+ */
+export function onUpdate<T extends THREE.Object3D>(
+  obj: T,
+  fn: Updater,
+  movers?: THREE.Object3D[],
+): T {
+  if (movers) obj.userData.movers = [...(obj.userData.movers ?? []), ...movers];
   const prev = obj.userData.update as Updater | undefined;
   obj.userData.update = prev
     ? (t: number, dt: number) => (prev(t, dt), fn(t, dt))
@@ -226,9 +235,15 @@ export function bakeStatic<T extends THREE.Object3D>(root: T): T {
   const inv = root.matrixWorld.clone().invert();
   const buckets = new Map<THREE.Material, THREE.BufferGeometry[]>();
   const baked: THREE.Mesh[] = [];
+  const movers = new Set<THREE.Object3D>();
+  root.traverse((o) => (o.userData.movers as THREE.Object3D[] | undefined)?.forEach((m) => movers.add(m)));
+  // Bagian yang bergerak digabung di ruang lokalnya sendiri, jadi tetap satu benda yang bisa digerakkan.
+  movers.forEach((m) => {
+    if (!(m as THREE.Mesh).isMesh) bakeStatic(m);
+  });
   const walk = (o: THREE.Object3D, animated: boolean) => {
     if (o.userData.keep || o.userData.noFit) return;
-    const anim = animated || !!o.userData.update;
+    const anim = animated || movers.has(o) || (!!o.userData.update && !o.userData.movers);
     const m = o as THREE.Mesh;
     if (
       m.isMesh &&

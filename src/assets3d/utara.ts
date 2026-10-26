@@ -181,7 +181,7 @@ export function volcano(seed = 7, H = 3.2) {
       );
       b.visible = activity > 0.3;
     }
-  });
+  }, bombs);
 }
 
 export function ashFall(w = 4, d = 3, count = 400, h = 4) {

@@ -630,5 +630,6 @@ export function protest(seed = 4) {
     crowd.children.forEach(
       (p, i) => (p.position.y = Math.max(0, Math.sin(t * 5 + i)) * 0.05),
     ),
+    crowd.children,
   );
 }

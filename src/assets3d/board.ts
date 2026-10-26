@@ -661,7 +661,7 @@ export function tile(index: number) {
     stepTileSpring(spring, load, dt);
     g.position.y = spring.offset;
     button.userData.pressOffset = spring.offset;
-  });
+  }, [g]);
 }
 
 /** All forty tiles face the same way so their typography can be reviewed together. */

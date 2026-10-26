@@ -76,7 +76,7 @@ export function monas() {
   return onUpdate(g, (t) => {
     flame.scale.set(1, 1 + Math.sin(t * 5) * 0.06, 1);
     flame.rotation.y = t * 0.3;
-  });
+  }, [flame]);
 }
 
 /** Taman Monas: rumput, jalan setapak, pohon, pagar, lampu taman. */
