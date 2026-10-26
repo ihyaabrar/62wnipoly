@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Situs +62WNIPOLY. Arah: poster demo dan rambu darurat.
  * Palet: aspal hangat (latar), krem kertas spanduk (teks), kuning rambu (aksen utama), oranye lahar (musibah/bahaya).
  * Motif: pita garis kuning-hitam seperti garis polisi dan pembatas lokasi bencana.
@@ -174,7 +174,7 @@
   width: 68%;
   height: 100%;
   object-fit: cover;
-  object-position: 40% 45%;
+  object-position: 46% 40%; /* pusatkan papan pada gambar papan.jpg */
   z-index: -2;
 }
 
