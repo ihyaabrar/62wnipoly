@@ -999,32 +999,152 @@
   cursor: pointer;
 }
 
+/* Layar akhir: menang berpita kuning rambu, kalah berpita merah lahar. */
 .over {
-  width: min(440px, 100%);
-  padding: 24px;
+  width: min(480px, 100%);
+  padding: 0 0 22px;
   text-align: center;
+  overflow: hidden;
+  --accent-end: var(--accent);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+
+.overWin {
+  --accent-end: #ffc61a;
+}
+
+.overLose {
+  --accent-end: #ff7a5c;
+}
+
+.over::before {
+  content: "";
+  display: block;
+  height: 12px;
+  background: repeating-linear-gradient(-45deg, var(--accent-end) 0 14px, #15110c 14px 28px);
+}
+
+.stampWrap {
+  padding: 22px 0 4px;
+}
+
+.stamp {
+  display: inline-block;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-size: 44px;
+  letter-spacing: 3px;
+  line-height: 1;
+  padding: 6px 18px 4px;
+  color: var(--accent-end);
+  border: 4px solid var(--accent-end);
+  border-radius: 6px;
+  transform: rotate(-4deg);
+  animation: stampIn 0.45s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+@keyframes stampIn {
+  from {
+    transform: rotate(-4deg) scale(2.4);
+    opacity: 0;
+  }
 }
 
 .over h2 {
-  margin: 0 0 4px;
-  font-size: 28px;
+  margin: 14px 18px 4px;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+}
+
+.endLine {
+  margin: 0 22px;
+  color: var(--muted);
+  line-height: 1.5;
+  min-height: 1.5em;
 }
 
 .rank {
+  list-style: none;
   text-align: left;
-  margin: 16px 0;
+  margin: 18px 18px 18px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.rank div {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 10px;
+.rank li {
+  display: grid;
+  grid-template-columns: 22px 12px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
+}
+
+.rankWinner {
+  background: rgba(255, 198, 26, 0.14) !important;
+  box-shadow: inset 3px 0 0 #ffc61a;
+}
+
+.rankNo {
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.rankDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.rankName,
+.rankEnd {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rankEnd {
+  text-align: right;
+}
+
+.rank b {
   font-size: 14px;
+}
+
+.rank small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.over .row {
+  padding: 0 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp {
+    animation: none;
+  }
+}
+
+/* Pengatur volume di menu pengaturan */
+.slider {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.slider input {
+  width: 100%;
+  accent-color: var(--accent);
+  min-height: 24px;
 }
 
 .row {

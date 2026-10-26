@@ -15,7 +15,8 @@ import type { ThrowSpec } from "./Dice";
 import { CINEMATIC_SECONDS, type Cinematic } from "./DisasterFX";
 import type { Zone } from "@/engine/data";
 import { rpShort, type GameSetup } from "./Setup";
-import { isMuted, setMuted, sfx, unlockAudio } from "./sfx";
+import { getVolume, isMuted, setMuted, setVolume, sfx, unlockAudio } from "./sfx";
+import { duckMusic, setMusicCrisis, startMusic, stopMusic } from "./music";
 import css from "./Game.module.css";
 
 const BOT_THINK_MS = 650;
@@ -103,6 +104,14 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
 
   useEffect(() => unlockAudio(), []);
 
+  // Musik latar: mulai saat main, ikut Level Krisis, mereda saat sinematik atau layar aturan/kartu terbuka.
+  useEffect(() => {
+    startMusic();
+    return () => stopMusic(0.4);
+  }, []);
+  useEffect(() => setMusicCrisis(state.crisis), [state.crisis]);
+  useEffect(() => duckMusic(fx.length > 0 || showRules || !!shown), [fx.length, showRules, shown]);
+
   const me = state.players.find((p) => !p.bot);
   const cur = state.players[state.turn];
   const myTurn = !!cur && !cur.bot && state.phase !== "over";
@@ -136,10 +145,19 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
     // Suara bencana diputar oleh sinematik; di luar itu, suara untung/rugi pemilik giliran.
     if (!disasters.length) {
       if (mine.health < was.health) sfx.hurt();
+      else if (mine.food > was.food) sfx.eat();
+      else if (mine.health >= was.health + 10) sfx.heal();
       else if (mine.wallet > was.wallet) sfx.coin();
     }
-    if (fresh.some((e) => e.kind === "out")) sfx.out();
-    if (next.phase === "over" && prev.phase !== "over") (next.winner !== null && !next.players[next.winner].bot ? sfx.win : sfx.out)();
+    if (crisisUp.length) setTimeout(sfx.crisis, 600);
+    if (next.halted && !prev.halted) sfx.halt();
+    const over = next.phase === "over" && prev.phase !== "over";
+    if (fresh.some((e) => e.kind === "out") && !over) sfx.out();
+    // Akhir permainan: musik dipudarkan, lalu penutup menang atau kalah sesuai nasibmu.
+    if (over) {
+      stopMusic(1.5);
+      setTimeout(next.winner !== null && !next.players[next.winner].bot ? sfx.victory : sfx.defeat, 900);
+    }
   }, []);
 
   /** Terapkan keadaan baru, lalu tahan UI selama bidak berjalan dan kartu ditarik. */
@@ -314,6 +332,29 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
   );
   const pct = state.ihsgChange;
 
+  // Teks layar akhir: spesifik pada cara menang atau gugur, bukan ucapan umum.
+  const iWon = state.winner !== null && state.winner === me?.id;
+  const byClock = state.phase === "over" && state.players.filter((p) => p.alive).length > 1;
+  const WHY: Record<string, string> = {
+    "jatuh sakit": "Badanmu menyerah. Antrean BPJS-nya masih panjang.",
+    "diburu pinjol": "Utangmu lewat batas. Bunganya sudah beranak.",
+    kelaparan: "Dua giliran tanpa makan. Harga beras naik lagi.",
+  };
+  const endTitle = iWon
+    ? "Kamu bertahan"
+    : state.winner !== null
+      ? `${state.players[state.winner].bot ? state.players[state.winner].name : "Kamu"} yang bertahan`
+      : "Tidak ada yang bertahan";
+  const endLine = iWon
+    ? byClock
+      ? `Ronde ${state.maxRounds} habis dan kamu paling kuat di antara yang tersisa.`
+      : `Semua lawan gugur. Kamu WNI terakhir yang masih berdiri di ronde ${state.round}.`
+    : me && !me.alive
+      ? `Gugur di ronde ${me.outRound}. ${WHY[me.cause ?? ""] ?? ""}`
+      : byClock
+        ? `Ronde ${state.maxRounds} habis. Kamu selamat, tapi ada yang lebih kuat bertahan.`
+        : "";
+
   return (
     <div className={css.root}>
       <div className={css.canvas}>
@@ -421,10 +462,19 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
               onClick={() => {
                 setMuted(!mute);
                 setMute(!mute);
+                if (mute) startMusic();
               }}
             >
               {mute ? "Suara: mati" : "Suara: nyala"}
             </button>
+            <label className={css.slider}>
+              <span>Musik</span>
+              <input type="range" min={0} max={1} step={0.05} defaultValue={getVolume().music} onChange={(e) => setVolume("music", Number(e.target.value))} aria-label="Volume musik" />
+            </label>
+            <label className={css.slider}>
+              <span>Efek</span>
+              <input type="range" min={0} max={1} step={0.05} defaultValue={getVolume().sfx} onChange={(e) => setVolume("sfx", Number(e.target.value))} aria-label="Volume efek suara" />
+            </label>
             <select className={css.select} aria-label="Kualitas grafis" value={quality} onChange={(e) => setQuality(e.target.value as Quality)}>
               <option value="tinggi">Grafis tinggi</option>
               <option value="sedang">Grafis sedang</option>
@@ -653,23 +703,44 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
 
       {state.phase === "over" && (
         <div className={css.overlay} role="dialog" aria-modal="true" aria-label="Permainan selesai">
-          <div className={`${css.panel} ${css.over}`}>
-            <h2>{state.winner === me?.id ? "Kamu bertahan!" : state.winner !== null ? `${state.players[state.winner].name} bertahan` : "Tidak ada yang bertahan"}</h2>
-            <p style={{ color: "var(--muted)", margin: 0 }}>
-              {state.winner === me?.id ? "WNI terakhir yang masih berdiri." : me?.alive ? "" : `Kamu gugur di ronde ${me?.outRound}: ${me?.cause}.`}
-            </p>
-            <div className={css.rank}>
-              {ranking.map((p, i) => (
-                <div key={p.id}>
-                  <span>
-                    {i + 1}. {p.name} ({CHARACTERS[p.character].name})
-                  </span>
-                  <span>{p.alive ? "Bertahan" : `Gugur ronde ${p.outRound}`}</span>
-                </div>
-              ))}
+          <div className={`${css.panel} ${css.over} ${iWon ? css.overWin : css.overLose}`}>
+            <div className={css.stampWrap}>
+              <span className={css.stamp}>{iWon ? "BERTAHAN" : me?.alive ? "SELESAI" : "GUGUR"}</span>
             </div>
+            <h2>{endTitle}</h2>
+            <p className={css.endLine}>{endLine}</p>
+            <ol className={css.rank}>
+              {ranking.map((p, i) => {
+                const idx = state.players.indexOf(p);
+                return (
+                  <li key={p.id} className={p.id === state.winner ? css.rankWinner : undefined}>
+                    <span className={css.rankNo}>{i + 1}</span>
+                    <i className={css.rankDot} style={{ background: PLAYER_COLORS[idx] }} aria-hidden="true" />
+                    <span className={css.rankName}>
+                      <b>{p.bot ? p.name : "Kamu"}</b>
+                      <small>{CHARACTERS[p.character].name}</small>
+                    </span>
+                    <span className={css.rankEnd}>
+                      {p.alive ? (
+                        <>
+                          <b>Bertahan</b>
+                          <small>
+                            Sehat {Math.max(0, p.health)} · {rpShort(p.wallet)} · Makan {p.food}
+                          </small>
+                        </>
+                      ) : (
+                        <>
+                          <b>Gugur ronde {p.outRound}</b>
+                          <small>{p.cause}</small>
+                        </>
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
             <div className={css.row}>
-              <button type="button" className={css.primary} onClick={onRestart}>
+              <button type="button" className={css.primary} onClick={onRestart} autoFocus>
                 Main lagi
               </button>
               <button type="button" className={css.ghost} onClick={onExit}>

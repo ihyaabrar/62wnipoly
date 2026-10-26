@@ -1,4 +1,4 @@
-// Efek suara disintesis dengan WebAudio: tanpa file audio, ukuran unduhan nol.
+﻿// Efek suara disintesis dengan WebAudio: tanpa file audio, ukuran unduhan nol.
 // Semua bunyi lewat satu kompresor + volume utama supaya keras-lemahnya stabil.
 
 let ctx: AudioContext | null = null;
@@ -21,6 +21,32 @@ export function setMuted(v: boolean) {
   }
 }
 
+let sfxBus: GainNode | null = null;
+let musicBus: GainNode | null = null;
+
+/** Volume terpisah untuk efek dan musik (0..1), disimpan di perangkat. */
+const vol = (() => {
+  const d = { sfx: 1, music: 0.55 };
+  try {
+    const v = JSON.parse(localStorage.getItem("wnipoly-volume") ?? "null");
+    if (v && typeof v.sfx === "number" && typeof v.music === "number") return { sfx: v.sfx, music: v.music };
+  } catch {
+    // penyimpanan diblokir atau rusak: pakai bawaan
+  }
+  return d;
+})();
+
+export const getVolume = () => ({ ...vol });
+export function setVolume(kind: "sfx" | "music", v: number) {
+  vol[kind] = Math.min(1, Math.max(0, v));
+  (kind === "sfx" ? sfxBus : musicBus)?.gain.setTargetAtTime(vol[kind], ctx?.currentTime ?? 0, 0.03);
+  try {
+    localStorage.setItem("wnipoly-volume", JSON.stringify(vol));
+  } catch {
+    // preferensi hanya berlaku sesi ini
+  }
+}
+
 function init() {
   if (ctx || typeof window === "undefined") return;
   ctx = new AudioContext();
@@ -30,6 +56,18 @@ function init() {
   master = ctx.createGain();
   master.gain.value = 0.9;
   master.connect(comp).connect(ctx.destination);
+  sfxBus = ctx.createGain();
+  sfxBus.gain.value = vol.sfx;
+  sfxBus.connect(master);
+  musicBus = ctx.createGain();
+  musicBus.gain.value = vol.music;
+  musicBus.connect(master);
+}
+
+/** Konteks audio dan bus musik untuk music.ts; null kalau belum ada interaksi atau di server. */
+export function audio() {
+  init();
+  return ctx && musicBus ? { ctx, musicBus } : null;
 }
 
 /**
@@ -67,7 +105,7 @@ function tone(freq: number, dur: number, type: OscillatorType = "sine", vol = 0.
   g.gain.setValueAtTime(0, t);
   g.gain.linearRampToValueAtTime(vol, t + 0.008);
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(f).connect(g).connect(master!);
+  o.connect(f).connect(g).connect(sfxBus!);
   o.start(t);
   o.stop(t + dur + 0.02);
 }
@@ -88,7 +126,7 @@ function noise(dur: number, vol = 0.12, delay = 0, freq = 2000, type: BiquadFilt
   f.Q.value = q;
   const g = a.createGain();
   g.gain.value = vol;
-  src.connect(f).connect(g).connect(master!);
+  src.connect(f).connect(g).connect(sfxBus!);
   src.start(t);
 }
 
@@ -179,6 +217,49 @@ export const sfx = {
   },
   win() {
     [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.32, "triangle", 0.1, i * 0.12));
+  },
+  /** Makan: dua kunyahan renyah dan satu telan. */
+  eat() {
+    for (let i = 0; i < 2; i++) noise(0.05, 0.12, i * 0.11, 2200, "bandpass", 2.5);
+    tone(180, 0.12, "sine", 0.06, 0.26, 120);
+  },
+  /** Pulih: tiga nada naik lembut. */
+  heal() {
+    [523, 659, 784].forEach((f, i) => tone(f, 0.22, "sine", 0.06, i * 0.08));
+  },
+  /** Level Krisis naik: dua pukulan gong rendah yang tidak enak. */
+  crisis() {
+    tone(98, 1.4, "sine", 0.2, 0, 90);
+    tone(103.8, 1.4, "sine", 0.14, 0.02, 95);
+    noise(0.5, 0.12, 0, 300);
+  },
+  /** Trading halt: alarm bursa tiga bunyi. */
+  halt() {
+    for (let i = 0; i < 3; i++) tone(1040, 0.12, "square", 0.04, i * 0.22);
+  },
+  /**
+   * Penutup menang: frase slendro naik dalam logam (nada utama + sebagian tak harmonis) dan gong penutup.
+   * Dipakai bersama musik latar yang dipudarkan.
+   */
+  victory() {
+    const f0 = 293.66;
+    [0, 240, 480, 720, 1200].forEach((c, i) => {
+      const f = f0 * Math.pow(2, c / 1200);
+      tone(f, 1.1, "sine", 0.11, i * 0.22);
+      tone(f * 2.76, 0.5, "sine", 0.03, i * 0.22);
+    });
+    tone(73.4, 3, "sine", 0.22, 1.1, 70);
+    noise(0.6, 0.08, 1.1, 400);
+  },
+  /** Penutup kalah: frase turun lambat dan gong yang menggantung. */
+  defeat() {
+    const f0 = 392;
+    [1200, 960, 720, 480, 0].forEach((c, i) => {
+      const f = f0 * Math.pow(2, (c - 1200) / 1200);
+      tone(f, 1.2, "sine", 0.09, i * 0.42);
+      tone(f * 2.76, 0.4, "sine", 0.02, i * 0.42);
+    });
+    tone(55, 3.5, "sine", 0.24, 1.9, 48);
   },
   turn() {
     tone(587, 0.12, "triangle", 0.09);
