@@ -7,6 +7,7 @@ import { OrbitControls } from "@react-three/drei";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 import { ASSETS, type AssetEntry } from "@/assets3d/registry";
 import { tickAll } from "@/assets3d/kit";
+import { loadModels } from "@/assets3d/models";
 import { HORIZON, Stage, type Quality } from "@/scene/Stage";
 
 async function toGlb(obj: THREE.Object3D) {
@@ -22,7 +23,14 @@ function download(blob: Blob, name: string) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-function AssetView({ entry, animate }: { entry: AssetEntry; animate: boolean }) {
+/** Tunggu model .glb (KayKit) dimuat dulu supaya aset yang memakainya tampil dengan model, bukan cadangannya. */
+function AssetView(props: { entry: AssetEntry; animate: boolean }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => void loadModels().then(() => setReady(true)), []);
+  return ready ? <AssetScene {...props} /> : null;
+}
+
+function AssetScene({ entry, animate }: { entry: AssetEntry; animate: boolean }) {
   const obj = useMemo(() => entry.make(), [entry]);
   const { camera, controls, scene } = useThree();
   // Arahkan kamera agar aset (besar atau kecil) memenuhi layar.

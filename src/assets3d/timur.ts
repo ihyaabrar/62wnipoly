@@ -3,6 +3,7 @@ import { C, ball, box, cyl, gableRoof, group, mat, onUpdate, rng, textTexture, t
 import { emitter, smoke, sparkles } from "./fx";
 import { banner, barricade, person, riotPolice, tearGas } from "./props";
 import { SLOGANS } from "./banners";
+import { model } from "./models";
 
 // Zona Timur: kompleks pemerintahan, uang, bursa, dan demo. Semua nama papan rekaan.
 
@@ -298,7 +299,22 @@ export function insiderGate() {
 const ROOF_SIGNS = [["APARTEMEN", "MULAI 2 M"], ["RUKO DIJUAL"], ["KANTOR PUSAT", "BUMN"], ["MALL", "SEPI"], ["HOTEL", "BINTANG 5"], ["CO-WORKING", "TANPA KERJA"]];
 
 /** Gedung kota acak: menara kaca, perkantoran beton, atau apartemen. */
+const KAYKIT_BUILDINGS = ["gedungA", "gedungB", "gedungC", "gedungD", "gedungE", "gedungF", "gedungG", "gedungH"] as const;
+
 export function cityBuilding(seed = 1) {
+  // Gedung KayKit (CC0) dengan papan nama satire di atapnya; gedung prosedural lama sebagai cadangan.
+  const m = model(KAYKIT_BUILDINGS[seed % KAYKIT_BUILDINGS.length], 0.7);
+  if (m) {
+    const b = new THREE.Box3().setFromObject(m);
+    const w = b.max.x - b.min.x, top = b.max.y, front = b.max.z;
+    const rs = rng(seed + 7);
+    const s = ROOF_SIGNS[Math.floor(rs() * ROOF_SIGNS.length)];
+    const signTex = textTexture(s, { bg: C.ink, fg: ["#f2b92e", "#ff8a6b", "#9fd3e8"][Math.floor(rs() * 3)], w: 256, h: 96 });
+    const signMat = new THREE.MeshStandardMaterial({ map: signTex, emissiveMap: signTex, emissive: "#ffffff", emissiveIntensity: 0.7 });
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(Math.min(w * 0.8, 1.1), 0.25), signMat);
+    sign.position.set(0, top + 0.2, front - 0.15);
+    return group("gedung-kota", m, sign, box(0.03, 0.2, 0.03, C.ink, [-0.35, top, front - 0.18]), box(0.03, 0.2, 0.03, C.ink, [0.35, top, front - 0.18]));
+  }
   const r = rng(seed);
   const kind = Math.floor(r() * 3);
   const w = 0.8 + r() * 0.5, d = 0.8 + r() * 0.4;

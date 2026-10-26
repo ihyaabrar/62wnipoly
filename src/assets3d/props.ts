@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { C, ball, box, cyl, group, mat, onUpdate, rng, textTexture, texturedPlane } from "./kit";
 import type { Slogan } from "./banners";
 import { emitter } from "./fx";
+import { model } from "./models";
 
 // Properti kecil: orang kerumunan, aparat, spanduk, dadu, kartu, bantuan.
 
@@ -143,7 +144,34 @@ export function mealTray() {
 }
 
 /** Mobil kecil. Plat merah untuk mobil dinas. */
+const BURNT = "#2b2622";
+
+/**
+ * Mobil. Memakai model KayKit kalau sudah dimuat: mobil dinas = sedan dengan strobo, mobil gosong =
+ * sedan yang dihitamkan, lainnya hatchback/station wagon/taksi dipilih dari warnanya (supaya stabil).
+ */
 export function car(color: string = "#3b6fb5", official = false) {
+  const pool = ["hatchback", "stationwagon", "taksi"] as const;
+  const kind = official || color === BURNT ? "sedan" : pool[[...color].reduce((a, ch) => a + ch.charCodeAt(0), 0) % pool.length];
+  const m = model(kind);
+  if (m) {
+    m.name = official ? "mobil-dinas" : "mobil";
+    if (color === BURNT) {
+      m.traverse((o) => {
+        const mesh = o as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        const mt = (mesh.material as THREE.MeshStandardMaterial).clone();
+        mt.color.set("#3a332d");
+        mesh.material = mt;
+      });
+    }
+    if (official) m.add(box(0.06, 0.03, 0.06, mat("#2a6bff", { emissive: "#2a6bff", emissiveIntensity: 2 }), [0, 0.27, 0])); // strobo
+    return m;
+  }
+  return proceduralCar(color, official);
+}
+
+function proceduralCar(color: string, official: boolean) {
   const wheel = (x: number, z: number) => cyl(0.07, 0.07, 0.05, C.ink, [x, 0.07, z], 10, [Math.PI / 2, 0, 0]);
   const glass = mat("#2b3a4a", { roughness: 0.1, metalness: 0.5 });
   const g = group(official ? "mobil-dinas" : "mobil",
@@ -159,6 +187,11 @@ export function car(color: string = "#3b6fb5", official = false) {
 }
 
 export function streetLamp() {
+  const m = model("lampuJalan", 1.15); // tinggi 0.96 KayKit -> ~1.1 seperti lampu lama
+  if (m) {
+    m.name = "lampu-jalan";
+    return m;
+  }
   return group("lampu-jalan",
     cyl(0.02, 0.03, 1.1, "#2b2f36", [0, 0, 0], 6),
     box(0.3, 0.02, 0.03, "#2b2f36", [0.13, 1.08, 0]),

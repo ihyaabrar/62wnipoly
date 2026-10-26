@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { C, ball, box, cone, cyl, gableRoof, group, mat, onUpdate, rng, textTexture, texturedPlane } from "./kit";
 import { embers, lightning, smoke } from "./fx";
 import { tree } from "./barat";
+import { HOMES, model, tint } from "./models";
 
 // Zona Utara: gunung meletus, hujan abu, rumah roboh, jalur evakuasi.
 
@@ -136,6 +137,13 @@ const ashMat = () => mat("#a8a29a", { roughness: 1 });
 
 export function collapsedHouse(seed = 2) {
   const r = rng(seed);
+  // Reruntuhan KayKit (CC0) berdebu abu di atas hamparan abu.
+  const ruin = model("rumahRoboh", 0.85);
+  if (ruin) {
+    tint(ruin, "#bdb6ab", 0.55);
+    ruin.rotation.y = r() * Math.PI * 2;
+    return group("rumah-roboh", ruin, box(1.4, 0.04, 1.1, ashMat()));
+  }
   const g = group("rumah-roboh",
     box(1.1, 0.55, 0.08, C.paper, [0, 0, -0.4], [-0.3, 0, 0]),
     box(0.08, 0.4, 0.8, C.paper, [-0.5, 0, 0], [0, 0, 0.45]),
@@ -150,6 +158,14 @@ export function collapsedHouse(seed = 2) {
 /** Rumah yang masih berdiri tapi atapnya tertimbun abu tebal. */
 export function ashedHouse(seed = 3) {
   const r = rng(seed);
+  // Rumah desa KayKit (CC0) yang tertutup debu abu, di atas hamparan abu.
+  const home = model(HOMES[seed % HOMES.length], 1.3);
+  if (home) {
+    tint(home, "#b8b2a8", 0.78); // atap dan dinding tertutup debu abu, warna asli masih samar terlihat
+    const g = group("rumah-tertimbun-abu", home, box(1.3, 0.04, 1.1, ashMat()));
+    g.rotation.y = r() * Math.PI;
+    return g;
+  }
   const g = group("rumah-tertimbun-abu",
     box(1, 0.7, 0.8, [C.paper, "#e8c9a0", "#cfe0e8"][Math.floor(r() * 3)]),
     gableRoof(1.12, 0.42, 0.98, "#8f8a83", [0, 0.7, 0]),
@@ -188,6 +204,17 @@ export function observationPost() {
 export function rocks(seed = 5) {
   const r = rng(seed);
   const g = group("bebatuan");
+  // Batu KayKit (CC0) kalau ada: tiga sampai empat bongkah dengan ukuran dan arah acak.
+  if (model("batuA")) {
+    const kinds = ["batuA", "batuC", "batuE"] as const;
+    for (let i = 0; i < 4; i++) {
+      const b = model(kinds[Math.floor(r() * 3)], 1.2 + r() * 1.1)!;
+      b.position.set((r() - 0.5) * 0.9, 0, (r() - 0.5) * 0.9);
+      b.rotation.y = r() * Math.PI * 2;
+      g.add(b);
+    }
+    return g;
+  }
   for (let i = 0; i < 6; i++) g.add(ball(0.08 + r() * 0.16, r() > 0.5 ? C.rock : C.rockDark, [(r() - 0.5) * 0.9, 0.05, (r() - 0.5) * 0.9]));
   return g;
 }

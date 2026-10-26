@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { loadModels } from "@/assets3d/models";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { sfx } from "./sfx";
 import { OrbitControls } from "@react-three/drei";
-import { fullBoard, pawnSpot, tileInfo } from "@/assets3d/board";
+import { TILE_D, TILE_W, fullBoard, pawnSpot, tileInfo } from "@/assets3d/board";
 import { PAWNS } from "@/assets3d/pawns";
 import { cyl, group, textTexture, tickAll } from "@/assets3d/kit";
 import { riotPolice } from "@/assets3d/props";
@@ -383,6 +384,27 @@ function CardDecks({ draw, deckScreen }: { draw: Draw | null; deckScreen: RefObj
   );
 }
 
+/** Bingkai kuning berdenyut di petak yang sedang dilihat infonya. */
+function TileHighlight({ index }: { index: number }) {
+  const frame = useMemo(() => {
+    const info = tileInfo(index);
+    const w = info.kind === "sudut" ? TILE_D : TILE_W;
+    const m = new THREE.MeshStandardMaterial({ color: "#f2b92e", emissive: "#f2b92e", emissiveIntensity: 0.9 });
+    const t = 0.06;
+    const g = new THREE.Group();
+    for (const [sx, sz, px, pz] of [[w, t, 0, TILE_D / 2], [w, t, 0, -TILE_D / 2], [t, TILE_D, w / 2, 0], [t, TILE_D, -w / 2, 0]]) {
+      const b = new THREE.Mesh(new THREE.BoxGeometry(sx, 0.05, sz), m);
+      b.position.set(px, 0.17, pz);
+      g.add(b);
+    }
+    g.position.copy(info.position);
+    g.rotation.y = info.rotationY;
+    return { g, m };
+  }, [index]);
+  useFrame((st) => (frame.m.emissiveIntensity = 0.6 + Math.sin(st.clock.elapsedTime * 5) * 0.4));
+  return <primitive object={frame.g} />;
+}
+
 /** Bidang tak terlihat di atas papan: klik (bukan seret) menunjuk petak terdekat. */
 function TilePicker({ onTile }: { onTile: (index: number) => void }) {
   const spots = useMemo(() => Array.from({ length: BOARD_SIZE }, (_, i) => tileInfo(i).position), []);
@@ -424,9 +446,23 @@ type WorldProps = {
   cinematic: Cinematic | null;
   deckScreen: RefObject<DeckScreen | null>;
   nav: RefObject<CameraNav | null>;
+  inspect: number | null;
 };
 
-export function World({ state, quality, follow, shakeKey, tagEls, onTile, shaking, throwSpec, onSettled, draw, cinematic, deckScreen, nav }: WorldProps) {
+/** Muat model .glb dulu (beberapa ratus KB), baru bangun dunia yang memakainya. */
+export function World(props: WorldProps) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let live = true;
+    loadModels().then(() => live && setReady(true));
+    return () => {
+      live = false;
+    };
+  }, []);
+  return ready ? <WorldScene {...props} /> : <Stage quality={props.quality} fogNear={40} fogFar={95} />;
+}
+
+function WorldScene({ state, quality, follow, shakeKey, tagEls, onTile, shaking, throwSpec, onSettled, draw, cinematic, deckScreen, nav, inspect }: WorldProps) {
   const pawnObjs = useRef<THREE.Object3D[]>([]);
   const register = useCallback((slot: number, o: THREE.Object3D) => {
     pawnObjs.current[slot] = o;
@@ -461,6 +497,7 @@ export function World({ state, quality, follow, shakeKey, tagEls, onTile, shakin
       ))}
       <TagProjector pawns={pawnObjs} tagEls={tagEls} />
       {onTile && <TilePicker onTile={onTile} />}
+      {inspect !== null && <TileHighlight index={inspect} />}
       {state.phase !== "over" && <TurnRing pawns={pawnObjs} turn={state.turn} />}
       <Dice shaking={shaking} throwSpec={throwSpec} onSettled={onSettled} />
       <DisasterFX cinematic={cinematic} hooks={hooks} crisis={state.crisis} />

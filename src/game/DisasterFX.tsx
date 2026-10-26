@@ -8,6 +8,7 @@ import { ashFall } from "@/assets3d/utara";
 import { emitter, smoke } from "@/assets3d/fx";
 import { box, cyl, tickAll } from "@/assets3d/kit";
 import { car } from "@/assets3d/props";
+import { model } from "@/assets3d/models";
 import { AVENUE_Z } from "@/assets3d/routes";
 import { sfx } from "./sfx";
 
@@ -87,17 +88,23 @@ function makeConvoy() {
   g.name = "konvoi-pejabat";
   const lights: THREE.MeshStandardMaterial[] = [];
   const police = () => {
-    const c = car("#e9ecef");
     const red = new THREE.MeshStandardMaterial({ color: "#ff2a2a", emissive: "#ff2a2a", emissiveIntensity: 3 });
     const blue = new THREE.MeshStandardMaterial({ color: "#2a6bff", emissive: "#2a6bff", emissiveIntensity: 3 });
     lights.push(red, blue);
+    // Model KayKit (CC0) kalau sudah dimuat; kalau tidak, mobil prosedural lama.
+    const m = model("mobilPolisi");
+    if (m) {
+      m.add(box(0.05, 0.03, 0.08, red, [-0.03, 0.245, 0.05]), box(0.05, 0.03, 0.08, blue, [-0.03, 0.245, -0.05]));
+      return m;
+    }
+    const c = car("#e9ecef");
     c.add(box(0.05, 0.04, 0.1, red, [-0.04, 0.35, 0.06]), box(0.05, 0.04, 0.1, blue, [-0.04, 0.35, -0.06]), box(0.6, 0.03, 0.302, "#1f3a8a", [0, 0.1, 0]));
     return c;
   };
   const vip = car("#111317", true);
   vip.add(cyl(0.006, 0.006, 0.18, "#c9c9c9", [0.28, 0.14, 0.13], 4), box(0.002, 0.05, 0.08, "#c8102e", [0.28, 0.29, 0.17]), box(0.002, 0.05, 0.08, "#ffffff", [0.28, 0.24, 0.17]));
   for (const c of [police(), vip, police()]) {
-    c.scale.setScalar(1.7);
+    c.scale.multiplyScalar(1.7);
     g.add(c);
   }
   g.visible = false;

@@ -3,6 +3,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { C, ball, box, cone, cyl, group, mat, onUpdate, rng, textTexture, texturedPlane, windows } from "./kit";
 import { fire } from "./barat";
 import { car, streetLamp } from "./props";
+import { model } from "./models";
 
 // Dunia di luar papan: tanah yang warnanya membaur antar-zona, jalan raya dan rel kereta berliku
 // yang menghubungkan empat zona, lengkap dengan kerusakan sesuai bencana di tiap zona.
@@ -297,7 +298,10 @@ function straightRoad(ax: number, az: number, bx: number, bz: number) {
   for (let i = 0; i <= n; i++) {
     const t = i / n;
     const x = ax + (bx - ax) * t, z = az + (bz - az) * t;
-    pts.push({ x, z, y: inFlood(x, z) ? BRIDGE_Y : baseHeight(x, z) + 0.03, tx: 0, tz: 0 });
+    // Menyeberangi sungai: lantai jembatan rata di atas permukaan air, bukan ikut turun ke dasar alur.
+    const riv = nearestRiver(x, z);
+    const y = inFlood(x, z) ? BRIDGE_Y : riv.d < 1.1 ? Math.max(baseHeight(x, z), riv.y + 0.32) : baseHeight(x, z) + 0.03;
+    pts.push({ x, z, y, tx: 0, tz: 0 });
   }
   smoothYOpen(pts, 10);
   return withTangents(pts, false);
@@ -467,6 +471,10 @@ export function highway() {
     const before = selatan[selatan.indexOf(a) - 6] ?? a;
     g.add(placeAlong(sign, before, 0.5, 0));
   }
+  // Jembatan kecil tempat jalan barat menyeberangi sungai: pagar kayu di kedua sisi.
+  const riverDeck = barat.filter((p) => nearestRiver(p.x, p.z).d < 0.9);
+  const deckRails = alongPath(riverDeck, 0.22, (p) => mergeGeometries([boxAt(p, 0.04, 0.14, 0.04, 0, 0.42), boxAt(p, 0.04, 0.14, 0.04, 0, -0.42)]));
+  if (deckRails) g.add(new THREE.Mesh(deckRails, mat(C.wood)));
   // Utara (jalur evakuasi): timbunan abu dan batu besar menutup ujung jalan, retak gempa di awal.
   [0.62, 0.8, 0.95].forEach((f, i) => {
     const p = utara[Math.floor((utara.length - 1) * f)];
@@ -502,6 +510,15 @@ export function highway() {
     }
   });
   [0.3, 0.7].forEach((k, i) => g.add(placeAlong(car(i ? "#1d1f24" : "#f2f2f2", i === 1), timur[Math.floor(timur.length * k)], 0.62, 0)));
+  // Perabot kota KayKit (CC0): lampu lalu lintas di mulut jalan, semak dan bangku di trotoar.
+  const tl = model("lampuLalin", 1.1);
+  if (tl) g.add(placeAlong(tl, timur[3], -0.6, 0));
+  timur.forEach((p, i) => {
+    if (i % 9 !== 0 || i < 9) return;
+    const side = (i / 9) % 2 ? 0.85 : -0.85;
+    const deco = model(i % 18 === 0 ? "bangku" : "semak", i % 18 === 0 ? 1.2 : 1.6);
+    if (deco) g.add(placeAlong(deco, p, side, 0));
+  });
   // Jalan cabang ke bangunan pojok (bertiang kalau melintasi banjir).
   for (const s of SPURS) {
     g.add(roadSurface(s));

@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { CHARACTERS, RULES, TILES, type CardDef } from "@/engine/data";
 import { CardArt } from "./CardArt";
 import { effectLines } from "./cardText";
+import { TilePanel } from "./TilePanel";
 import { applyAction, createGame, type Action, type GameState, type LogEvent, type Option } from "@/engine/game";
 import { chooseAction } from "@/engine/bot";
 import type { Quality } from "@/scene/Stage";
@@ -50,6 +51,8 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
   const tagEls = useRef<(HTMLElement | null)[]>([]);
   const deckScreen = useRef<DeckScreen | null>({ kesempatan: { x: 0, y: 0 }, musibah: { x: 0, y: 0 } });
   const nav = useRef<CameraNav | null>(null);
+  // Petak yang sedang dilihat infonya (klik/ketuk petak di papan).
+  const [inspect, setInspect] = useState<number | null>(null);
   // Lemparan dadu: kocok (tahan) -> lempar (lepas) -> fisika -> baru keadaan game diperbarui.
   const [shaking, setShaking] = useState(false);
   const [charging, setCharging] = useState(false);
@@ -228,6 +231,7 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
       if (e.key === "+" || e.key === "=") return nav.current?.zoom(0.8);
       if (e.key === "-") return nav.current?.zoom(1.25);
       if (e.key === "0") return nav.current?.reset();
+      if (e.key === "Escape" && inspect !== null) return setInspect(null);
       if (shown && cardIsMine && (e.key === " " || e.key === "Enter")) {
         e.preventDefault();
         setShown(null);
@@ -254,7 +258,7 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
     };
-  }, [myTurn, busy, shown, cardIsMine, state, act, startCharge, release, throwDice]);
+  }, [myTurn, busy, shown, cardIsMine, state, act, startCharge, release, throwDice, inspect]);
 
   const recent = useMemo(() => state.log.slice(-4).reverse(), [state.log]);
   const ranking = useMemo(
@@ -267,9 +271,11 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
     <div className={css.root}>
       <div className={css.canvas}>
         <Canvas shadows camera={{ position: [4, 15, 16], fov: 42 }} dpr={[1, quality === "tinggi" ? 1.5 : 1]} gl={{ antialias: false }}>
-          <World state={state} quality={quality} follow={follow} shakeKey={shakeKey} tagEls={tagEls} shaking={shaking} throwSpec={throwSpec} onSettled={onSettled} draw={draw} cinematic={cinematic} deckScreen={deckScreen} nav={nav} />
+          <World state={state} quality={quality} follow={follow} shakeKey={shakeKey} tagEls={tagEls} shaking={shaking} throwSpec={throwSpec} onSettled={onSettled} draw={draw} cinematic={cinematic} deckScreen={deckScreen} nav={nav} inspect={inspect} onTile={setInspect} />
         </Canvas>
       </div>
+
+      {inspect !== null && <TilePanel state={state} index={inspect} onClose={() => setInspect(null)} />}
 
       <div className={css.camCtl} role="group" aria-label="Kamera">
         <button type="button" onClick={() => nav.current?.zoom(0.8)} aria-label="Perbesar" title="Perbesar (+)">
@@ -361,7 +367,7 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
               <option value="sedang">Grafis sedang</option>
               <option value="rendah">Grafis rendah</option>
             </select>
-            <small className={css.hint}>Tahan Spasi: kocok, lepas: lempar · Enter: lempar cepat · 1-9: pilih aksi · +/-: zoom · 0: posisi awal</small>
+            <small className={css.hint}>Tahan Spasi: kocok, lepas: lempar · Enter: lempar cepat · 1-9: pilih aksi · +/-: zoom · 0: posisi awal · klik petak: info</small>
           </div>
         </details>
         <button type="button" className={css.ghost} onClick={onExit}>

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { C, ball, box, cyl, cone, gableRoof, group, mat, onUpdate, rng, windows } from "./kit";
 import { drift, rain } from "./fx";
 import { person } from "./props";
+import { HOMES, model, tint } from "./models";
 
 // Zona Selatan: pantai dan permukiman terendam banjir bandang.
 
@@ -10,16 +11,20 @@ export function floodedHouse(seed = 1) {
   const r = rng(seed);
   const wall = [C.white, C.paper, "#e8c9a0", "#cfe0e8", "#e3d1e8"][Math.floor(r() * 5)];
   const roof = [C.roofRed, C.roofBlue, "#8a6a4f"][Math.floor(r() * 3)];
-  const g = group("rumah-terendam",
-    box(1.1, 0.8, 0.85, wall),
-    box(1.14, 0.06, 0.89, "#9a8d7a", [0, 0, 0]), // lis bawah
-    gableRoof(1.25, 0.45, 1.05, roof, [0, 0.8, 0]),
-    box(1.27, 0.04, 0.06, "#5a3a22", [0, 1.23, 0]), // bubungan
-    windows(1, 0.5, 1, 2, 0.43, 0.2, "#33424f"),
-    box(0.22, 0.45, 0.03, C.woodDark, [-0.3, 0, 0.43]),
-    box(0.05, 0.35, 0.05, C.concrete, [0.35, 1.0, -0.2]),
-    box(0.16, 0.1, 0.08, "#dcdcdc", [0.6, 0.45, 0.1]), // unit AC
-  );
+  // Rumah desa KayKit (CC0) kalau sudah dimuat; rumah prosedural lama sebagai cadangan.
+  const home = model(HOMES[seed % HOMES.length], 1.35);
+  const g = home
+    ? group("rumah-terendam", home)
+    : group("rumah-terendam",
+        box(1.1, 0.8, 0.85, wall),
+        box(1.14, 0.06, 0.89, "#9a8d7a", [0, 0, 0]), // lis bawah
+        gableRoof(1.25, 0.45, 1.05, roof, [0, 0.8, 0]),
+        box(1.27, 0.04, 0.06, "#5a3a22", [0, 1.23, 0]), // bubungan
+        windows(1, 0.5, 1, 2, 0.43, 0.2, "#33424f"),
+        box(0.22, 0.45, 0.03, C.woodDark, [-0.3, 0, 0.43]),
+        box(0.05, 0.35, 0.05, C.concrete, [0.35, 1.0, -0.2]),
+        box(0.16, 0.1, 0.08, "#dcdcdc", [0.6, 0.45, 0.1]), // unit AC
+      );
   // Pagar yang mencuat dari air.
   for (let i = 0; i < 6; i++) g.add(box(0.03, 0.35, 0.03, C.wood, [-0.6 + i * 0.24, -0.1, 0.75]));
   g.add(box(1.3, 0.03, 0.02, C.wood, [0, 0.15, 0.75]));
@@ -138,6 +143,9 @@ export function seaWaves(w = 36, d = 2.4, shoreLocalZ: (x: number) => number = (
 }
 
 export function refugeeTent(color: string = C.roofBlue) {
+  // Tenda KayKit (CC0) diwarnai sedikit sesuai warna terpal, plus kardus bantuan.
+  const tent = model("tenda", 1.6);
+  if (tent) return group("tenda-pengungsian", tint(tent, color, 0.45), box(0.3, 0.12, 0.2, "#d8b98a", [0.55, 0, 0.2]));
   const t = cone(0.55, 0.6, color, [0, 0, 0], 4);
   t.rotation.y = Math.PI / 4;
   return group("tenda-pengungsian",

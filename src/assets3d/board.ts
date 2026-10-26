@@ -278,7 +278,7 @@ export function dressBarat() {
 export function dressTimur() {
   const g = group("dekor-timur",
     at(parliament(), 13.6, 0, -Math.PI / 2, 1.1),
-    at(protest(), 10.2, -1.9), // demo di bahu jalan utama, menghadap gedung dewan
+    at(protest(), 10.2, -2.6), // demo di bahu jalan utama, menghadap gedung dewan
     at(stockExchange(), 12.6, -5.4, -Math.PI / 2, 1.1),
     at(stateBank(), 12.6, 5.4, -Math.PI / 2, 1.1),
     at(cooperative(), 8.6, 5.2, -Math.PI / 2, 1),

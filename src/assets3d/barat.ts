@@ -1,10 +1,19 @@
 import * as THREE from "three";
 import { C, ball, box, cone, cyl, group, mat, onUpdate, rng, textTexture, texturedPlane } from "./kit";
 import { embers, emitter, flames, smoke } from "./fx";
+import { model } from "./models";
 
 // Zona Barat: hutan, kebun sawit, kebakaran lahan, kabut asap, pemadaman dari udara.
 
 export function tree(seed = 1) {
+  // Pohon KayKit (CC0), dua jenis bergantian, tinggi sedikit bervariasi.
+  const rm = rng(seed + 101);
+  const m = model(seed % 2 ? "pohonA" : "pohonB", 0.9 + rm() * 0.35);
+  if (m) {
+    m.name = "pohon";
+    m.rotation.y = rm() * Math.PI * 2;
+    return m;
+  }
   const r = rng(seed);
   const h = 0.4 + r() * 0.35;
   if (r() > 0.5) {
@@ -192,6 +201,11 @@ export function concessionSign() {
 }
 
 export function stump() {
+  const m = model("tunggul", 0.8);
+  if (m) {
+    m.name = "tunggul";
+    return m;
+  }
   return group("tunggul",
     cyl(0.09, 0.12, 0.13, C.wood, [0, 0, 0], 8),
     cyl(0.085, 0.085, 0.005, "#c79a63", [0, 0.13, 0], 8),
