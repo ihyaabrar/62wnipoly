@@ -1,0 +1,1083 @@
+/*
+ * Palet HUD sama dengan situs: panel aspal hangat, teks krem, aksen kuning rambu.
+ * Merah/hijau dibuat lembut supaya naik-turun angka tetap terbaca tanpa menyilaukan di atas papan 3D.
+ */
+.root {
+  --text: #f4ecd8;
+  --muted: #bdb19b;
+  --accent: #ffc61a;
+  --danger: #ff7a5c;
+  --good: #8fd39c;
+  position: relative;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: #cdb397;
+  color: var(--text);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.panel {
+  background: rgba(26, 21, 15, 0.86);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(244, 236, 216, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- Bar atas ---------- */
+.topbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 14px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+.brand span {
+  color: #ffc61a;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.stat b {
+  font-size: 15px;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.crisisBar {
+  display: flex;
+  gap: 2px;
+  margin-top: 3px;
+}
+
+.crisisBar i {
+  width: 9px;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.crisisBar i.on {
+  background: linear-gradient(#ffc61a, #e8623d);
+}
+
+.up {
+  color: var(--good) !important;
+}
+
+.down {
+  color: var(--danger) !important;
+}
+
+.halt {
+  background: var(--accent);
+  color: #111;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.spacer {
+  flex: 1;
+}
+
+.select,
+.ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* ---------- Kontrol kamera (kanan, tengah) ---------- */
+.camCtl {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 3;
+}
+
+.camCtl button {
+  min-width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(244, 236, 216, 0.14);
+  background: rgba(26, 21, 15, 0.86);
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.camCtl button:hover {
+  border-color: var(--accent);
+}
+
+.camCtl .camHome {
+  font-size: 12px;
+  padding: 0 8px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  height: auto;
+  min-height: 96px;
+}
+
+/* ---------- Pemain ---------- */
+.players {
+  position: absolute;
+  top: 78px;
+  left: 12px;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100dvh - 300px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px; /* ruang untuk geseran kartu pemain aktif */
+}
+
+.player {
+  padding: 10px 12px;
+  border-left: 4px solid var(--c);
+  transition: transform 0.2s, outline-color 0.2s;
+  outline: 2px solid transparent;
+}
+
+.player.active {
+  outline-color: var(--c);
+  transform: translateX(4px);
+}
+
+.player.out {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+
+.pname {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.pname small {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 6px 0 4px;
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s, background 0.4s;
+}
+
+.nums {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.nums b {
+  color: var(--text);
+}
+
+.badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.player {
+  position: relative;
+}
+
+/* Label nama dan angka melayang di atas bidak (dunia 3D) */
+.tagLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.tagWrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.tag {
+  font: 800 11px/1.2 system-ui, sans-serif;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Chip dampak pilihan */
+.evRow {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.evGood,
+.evBad {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.evGood {
+  background: rgba(143, 211, 156, 0.16);
+  color: var(--good);
+}
+
+.evBad {
+  background: rgba(255, 122, 92, 0.16);
+  color: #ffa184;
+}
+
+/* Lapisan warna sinematik bencana (di atas kanvas, di bawah HUD) */
+.fxLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fxLayer > div {
+  position: absolute;
+  inset: 0;
+  animation: fxIn 5.5s ease-in-out forwards;
+}
+
+@keyframes fxIn {
+  0% {
+    opacity: 0;
+  }
+  25%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Erupsi: langit memerah, tepi layar menyala */
+.fx_utara {
+  background: radial-gradient(ellipse at 70% 10%, rgba(255, 90, 31, 0.35), transparent 60%);
+  box-shadow: inset 0 0 160px rgba(200, 40, 10, 0.55);
+  mix-blend-mode: screen;
+}
+
+/* Banjir: air biru naik dari bawah layar */
+.fx_selatan {
+  background: linear-gradient(to top, rgba(40, 110, 170, 0.35), transparent 55%);
+}
+
+/* Karhutla: kabut asap oranye kelabu */
+.fx_barat {
+  background: rgba(150, 110, 70, 0.32);
+  backdrop-filter: sepia(0.35) blur(0.6px);
+}
+
+/* Pungli: kedip sirene merah-biru di tepi layar */
+.fx_timur::before,
+.fx_timur::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  animation: siren 0.9s steps(1) infinite;
+}
+
+.fx_timur::before {
+  box-shadow: inset 90px 0 120px -60px rgba(255, 40, 40, 0.7);
+}
+
+.fx_timur::after {
+  box-shadow: inset -90px 0 120px -60px rgba(40, 90, 255, 0.7);
+  animation-delay: 0.45s;
+}
+
+@keyframes siren {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Tombol tahan-untuk-mengocok dengan meteran tenaga */
+.rollBtn {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.rollFill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+  background: linear-gradient(90deg, #ffc61a, #ff9a3c);
+}
+
+.rollText {
+  position: relative;
+}
+
+/* Penanda giliranmu */
+.yourTurn {
+  border-color: var(--accent);
+  animation: glow 1.4s ease-in-out infinite;
+}
+
+@keyframes glow {
+  50% {
+    box-shadow: 0 0 0 3px rgba(227, 179, 65, 0.45), 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.toast {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  animation: floatUp 1.8s ease-out forwards;
+}
+
+.toastGood {
+  background: rgba(47, 168, 79, 0.9);
+  color: #fff;
+}
+
+.toastBad {
+  background: rgba(229, 72, 77, 0.92);
+  color: #fff;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  15% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-18px);
+    opacity: 0;
+  }
+}
+
+/* Banner bencana akhir ronde */
+.banner {
+  position: absolute;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #4a2014, #a2401f);
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  animation: drop 0.4s ease-out;
+  z-index: 4;
+  text-align: center;
+  max-width: calc(100% - 24px);
+}
+
+.banner b {
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.banner span {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+@keyframes drop {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+}
+
+.kbd {
+  float: right;
+  font: 700 11px/1 system-ui, sans-serif;
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
+.ghost[aria-pressed="false"] {
+  opacity: 0.7;
+}
+
+/* Menu pengaturan */
+.menu {
+  position: relative;
+}
+
+.menu summary {
+  list-style: none;
+  display: inline-block;
+}
+
+.menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.menuBody {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  min-width: 200px;
+  z-index: 6;
+}
+
+.menuBody .ghost,
+.menuBody .select {
+  text-align: left;
+  width: 100%;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ---------- Panel aksi ---------- */
+.action {
+  position: absolute;
+  left: 50%;
+  bottom: 56px;
+  transform: translateX(-50%);
+  width: min(560px, calc(100% - 24px));
+  padding: 14px 16px;
+}
+
+.turn {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.turn b {
+  color: var(--text);
+}
+
+.primary {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  background: var(--accent);
+  color: #1a1408;
+}
+
+.primary:hover {
+  filter: brightness(1.08);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.option {
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.option:hover {
+  background: rgba(227, 179, 65, 0.16);
+  border-color: var(--accent);
+}
+
+.option small {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.thinking {
+  font-size: 15px;
+  padding: 6px 0;
+}
+
+/* ---------- Ticker berita ---------- */
+.ticker {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.tickerLabel {
+  background: var(--danger);
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.tickerText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.k_good {
+  color: var(--good);
+}
+
+.k_bad,
+.k_out {
+  color: #ffa184;
+}
+
+.k_disaster {
+  color: #ffb26b;
+}
+
+.k_market {
+  color: #a9c8da;
+}
+
+.k_card {
+  color: #ffd86b;
+}
+
+/* ---------- Modal (kartu, akhir) ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 12, 16, 0.45);
+  padding: 16px;
+  z-index: 5;
+}
+
+/* Kartu terbang keluar dari dek 3D (posisi --fx/--fy dari tengah layar), lalu berbalik. */
+.cardFly {
+  width: min(360px, 100%);
+  perspective: 1200px;
+  animation: cardFly 0.45s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes cardFly {
+  from {
+    transform: translate(var(--fx), var(--fy)) scale(0.18) rotate(-8deg);
+  }
+}
+
+.cardFlip {
+  display: grid;
+  transform-style: preserve-3d;
+  animation: cardTurn 0.55s 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+
+@keyframes cardTurn {
+  from {
+    transform: rotateY(180deg);
+  }
+}
+
+.cardFlip > * {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+}
+
+/* Warna dek: Kesempatan kuning, Musibah hitam. */
+.deckK {
+  --deckBg: #f2c94c;
+  --deckInk: #1d1f24;
+  --deckAccent: #1d1f24;
+  --deckSoft: rgba(0, 0, 0, 0.08);
+}
+
+.deckM {
+  --deckBg: #1d1f24;
+  --deckInk: #f2ede1;
+  --deckAccent: #ff5a5a;
+  --deckSoft: rgba(255, 255, 255, 0.08);
+}
+
+.cardBack {
+  transform: rotateY(180deg);
+  border-radius: 18px;
+  background: var(--deckBg);
+  border: 8px solid #f7f1e1;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-content: center;
+  text-align: center;
+  color: var(--deckAccent);
+}
+
+.cardBack span {
+  font-size: 140px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.cardBack b {
+  letter-spacing: 3px;
+  font-size: 18px;
+}
+
+.card {
+  border-radius: 18px;
+  padding: 16px 18px 18px;
+  background: var(--deckBg);
+  color: var(--deckInk);
+  border: 8px solid #f7f1e1;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+
+.deck {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--deckAccent);
+}
+
+.card h2 {
+  margin: 4px 0 10px;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.card p {
+  margin: 10px 0;
+  line-height: 1.45;
+}
+
+.effect {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.effect li {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--deckSoft);
+}
+
+.effect b {
+  color: var(--deckAccent);
+  margin-right: 4px;
+}
+
+.fact {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--deckSoft);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.fact b {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.fact a {
+  color: inherit;
+  font-weight: 800;
+}
+
+.cardBtn {
+  margin-top: 14px;
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--deckInk, #1d1f24);
+  color: var(--deckBg, #f7f1e1);
+  cursor: pointer;
+}
+
+.over {
+  width: min(440px, 100%);
+  padding: 24px;
+  text-align: center;
+}
+
+.over h2 {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+.rank {
+  text-align: left;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rank div {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.row > * {
+  flex: 1;
+}
+
+/* ---------- Layar persiapan ---------- */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--accent);
+}
+
+.setup {
+  --text: #f4ecd8;
+  --muted: #bdb19b;
+  --accent: #ffc61a;
+  color: var(--text);
+  height: 100dvh; /* body tidak bisa digulir (overflow hidden), jadi layar ini menggulir sendiri */
+  overflow-y: auto;
+  padding: 24px 16px 48px;
+  background: radial-gradient(ellipse at top, #2b2319, #15110c 70%);
+}
+
+.setupInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.hero {
+  font-size: clamp(40px, 9vw, 72px);
+  font-weight: 900;
+  margin: 8px 0 0;
+  line-height: 1;
+}
+
+.hero span {
+  color: #ffc61a;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 17px;
+  margin: 8px 0 28px;
+}
+
+.field {
+  margin-bottom: 22px;
+}
+
+.field > label,
+.field > legend {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+fieldset.field {
+  border: 0;
+  padding: 0;
+  margin-inline: 0;
+}
+
+.input {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 16px;
+}
+
+.chars {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.char {
+  text-align: left;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.char[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgba(227, 179, 65, 0.1);
+}
+
+.char b {
+  font-size: 16px;
+}
+
+.char p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 4px 0 8px;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.seg {
+  display: inline-flex;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.seg button {
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  padding: 10px 16px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.seg button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #1a1408;
+  font-weight: 800;
+}
+
+.start {
+  max-width: 360px;
+}
+
+/* ---------- Layar kecil ---------- */
+@media (max-width: 760px) {
+  /* HP: tombol kamera di kanan atas, di bawah bar atas, supaya tidak menimpa kartu pemain. */
+  .camCtl {
+    top: 128px;
+    transform: none;
+    flex-direction: row;
+  }
+
+  .camCtl .camHome {
+    writing-mode: horizontal-tb;
+    transform: none;
+    min-height: 0;
+    height: 44px;
+  }
+
+  .topbar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 10px;
+    padding: 6px 10px;
+  }
+
+  .brand {
+    font-size: 16px;
+  }
+
+  .players {
+    top: auto;
+    bottom: 236px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    max-height: none;
+  }
+
+  .player {
+    min-width: 170px;
+  }
+
+  .action {
+    bottom: 50px;
+  }
+
+  .ticker {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardFly,
+  .cardFlip,
+  .halt,
+  .banner,
+  .yourTurn,
+  .toast {
+    animation: none;
+  }
+}

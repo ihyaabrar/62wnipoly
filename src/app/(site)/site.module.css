@@ -1,0 +1,1271 @@
+/*
+ * Situs +62WNIPOLY. Arah: poster demo dan rambu darurat.
+ * Palet: aspal hangat (latar), krem kertas spanduk (teks), kuning rambu (aksen utama), oranye lahar (musibah/bahaya).
+ * Motif: pita garis kuning-hitam seperti garis polisi dan pembatas lokasi bencana.
+ * Judul: huruf kondensed tebal (Impact) seperti tulisan spanduk; isi: font sistem agar mudah dibaca.
+ */
+.shell {
+  --aspal: #15110c;
+  --panel: #211b14;
+  --panel2: #2b2319;
+  --garis: #3d3226;
+  --krem: #f4ecd8;
+  --redup: #bdb19b;
+  --kuning: #ffc61a;
+  --lava: #ff6a2b;
+  --spanduk: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--aspal);
+  color: var(--krem);
+}
+
+.shell a {
+  color: inherit;
+}
+
+.shell :focus-visible {
+  outline: 3px solid var(--kuning);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Logo ---------- */
+.poly {
+  color: var(--kuning);
+}
+
+.logo {
+  font-family: var(--spanduk);
+  font-size: 26px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.logo62 {
+  background: var(--kuning);
+  color: var(--aspal);
+  padding: 3px 6px 2px;
+  border-radius: 4px;
+  transform: rotate(-3deg);
+  display: inline-block;
+}
+
+/* ---------- Navbar ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(21, 17, 12, 0.94);
+  border-bottom: 1px solid var(--garis);
+}
+
+.navInner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand {
+  text-decoration: none;
+  margin-right: auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.links a {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--redup);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.links a:hover {
+  color: var(--krem);
+  background: var(--panel);
+}
+
+.links a[aria-current="page"] {
+  color: var(--krem);
+  box-shadow: inset 0 -3px 0 var(--kuning);
+  border-radius: 0;
+}
+
+.links .navCta {
+  margin-left: 8px;
+  background: var(--kuning);
+  color: var(--aspal);
+}
+
+.links .navCta:hover {
+  background: #ffd54d;
+  color: var(--aspal);
+}
+
+.burger {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--garis);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--krem);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.burger span {
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+}
+
+/* ---------- Pita rambu (motif) ---------- */
+.tape {
+  height: 14px;
+  background: repeating-linear-gradient(-45deg, var(--kuning) 0 16px, var(--aspal) 16px 32px);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  min-height: min(680px, calc(100dvh - 64px));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.heroImg {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 68%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 40% 45%;
+  z-index: -2;
+}
+
+/* Gelap di kiri supaya judul terbaca di atas gambar; gambar tetap utuh di kanan. */
+.heroFade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, var(--aspal) 32%, rgba(21, 17, 12, 0.85) 46%, rgba(21, 17, 12, 0.15) 70%, rgba(21, 17, 12, 0) 85%),
+    linear-gradient(0deg, var(--aspal) 0%, rgba(21, 17, 12, 0) 22%);
+}
+
+.heroText {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 56px 24px;
+}
+
+.heroText > * {
+  max-width: 560px;
+}
+
+.kicker {
+  margin: 0 0 18px;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--kuning);
+}
+
+.heroLogo {
+  margin: 0;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: clamp(64px, 11vw, 132px);
+  line-height: 0.88;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.heroLogo .logo62 {
+  font-size: 0.5em;
+  padding: 6px 12px 4px;
+  margin-bottom: 8px;
+}
+
+.tagline {
+  margin: 22px 0 10px;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.tagline mark {
+  background: var(--kuning);
+  color: var(--aspal);
+  padding: 0 8px;
+  border-radius: 3px;
+  display: inline-block;
+  transform: rotate(-1.5deg);
+}
+
+.topics {
+  margin: 0;
+  color: var(--redup);
+  font-size: 15px;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 26px;
+  border-radius: 10px;
+  background: var(--kuning);
+  color: var(--aspal) !important;
+  font-weight: 900;
+  font-size: 17px;
+  text-decoration: none;
+  box-shadow: 0 5px 0 #a87d00;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 #a87d00;
+}
+
+.cta:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #a87d00;
+}
+
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 10px;
+  border: 2px solid var(--garis);
+  background: transparent;
+  color: var(--krem);
+  font-weight: 800;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ghost:hover {
+  border-color: var(--kuning);
+}
+
+/* ---------- Bagian umum ---------- */
+.wrap,
+.wrapFlat {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 72px 24px 0;
+}
+
+.h2 {
+  margin: 0 0 16px;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: clamp(32px, 4.4vw, 48px);
+  line-height: 1;
+  letter-spacing: 0.5px;
+}
+
+.lead {
+  margin: 0;
+  color: var(--redup);
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+.headRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.textLink {
+  color: var(--kuning) !important;
+  font-weight: 800;
+  text-underline-offset: 4px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Monopoli tanpa properti: teks kiri, meteran kanan */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.meters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.meters li {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  background: var(--panel);
+  border-radius: 10px;
+  border-left: 6px solid var(--c);
+}
+
+.meters b {
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--c);
+}
+
+.meters span {
+  color: var(--redup);
+  line-height: 1.5;
+}
+
+/* Zona: empat blok berwarna seperti pita petak */
+.zoneStrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.zoneTile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 20px 26px;
+  min-height: 190px;
+  background: var(--panel);
+  border-top: 10px solid var(--z);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.zoneTile + .zoneTile {
+  border-left: 1px solid var(--garis);
+}
+
+.zoneTile:hover {
+  background: var(--panel2);
+}
+
+.zoneTile small {
+  font-weight: 800;
+  color: color-mix(in srgb, var(--z) 60%, white);
+  font-size: 14px;
+}
+
+.zoneTile b {
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.zoneTile span {
+  color: var(--redup);
+  line-height: 1.5;
+}
+
+/* Cara main: deretan dadu bernomor */
+.steps {
+  list-style: none;
+  counter-reset: s;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+
+.steps li {
+  counter-increment: s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.steps li::before {
+  content: counter(s);
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--krem);
+  color: var(--aspal);
+  font-family: var(--spanduk);
+  font-size: 26px;
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.18);
+  margin-bottom: 6px;
+}
+
+.steps li:nth-child(even)::before {
+  transform: rotate(8deg);
+}
+
+.steps b {
+  font-size: 18px;
+}
+
+.steps span {
+  color: var(--redup);
+  line-height: 1.55;
+  font-size: 15px;
+}
+
+/* Pita kartu: teks kiri, kipas kartu kanan */
+.cardsBand {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.cardsCopy .cta {
+  margin-top: 24px;
+}
+
+.fan {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 20px 0;
+}
+
+.fan > article {
+  margin: 0 -14px;
+}
+
+.fan > article:nth-child(1) {
+  transform: rotate(-7deg) translateY(10px);
+}
+
+.fan > article:nth-child(2) {
+  transform: translateY(-12px);
+  z-index: 1;
+}
+
+.fan > article:nth-child(3) {
+  transform: rotate(7deg) translateY(10px);
+}
+
+.cardK,
+.cardM {
+  border-radius: 14px;
+  padding: 12px 14px 14px;
+  border: 6px solid var(--krem);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+
+.cardK {
+  background: #f2c94c;
+  color: #1d1f24;
+}
+
+.cardM {
+  background: #1d1f24;
+  color: #f2ede1;
+}
+
+.cardK small,
+.cardM small {
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  font-size: 11px;
+}
+
+.cardM small {
+  color: #ff7a7a;
+}
+
+.cardK h3,
+.cardM h3 {
+  margin: 4px 0 10px;
+  font-size: 19px;
+  line-height: 1.15;
+}
+
+.cardK p,
+.cardM p {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Peran (beranda) */
+.roleChips {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--garis);
+  border: 1px solid var(--garis);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.roleChips a {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  padding: 18px 20px;
+  background: var(--aspal);
+  text-decoration: none;
+}
+
+.roleChips a:hover {
+  background: var(--panel);
+}
+
+.roleChips b {
+  font-size: 17px;
+}
+
+.roleChips span {
+  color: var(--redup);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.final {
+  margin: 96px auto 0;
+  padding: 56px 24px 72px;
+  text-align: center;
+  width: min(1180px, 100%);
+}
+
+.final h2 {
+  margin: 0 0 10px;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 64px);
+}
+
+.final p {
+  margin: 0 0 26px;
+  color: var(--redup);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  margin-top: 72px;
+}
+
+.footerInner {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  color: var(--redup);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footerInner p {
+  margin: 0;
+  max-width: 60ch;
+}
+
+.footerInner nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.footerInner nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  text-underline-offset: 4px;
+}
+
+/* ---------- Halaman dalam ---------- */
+.page {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.pageHead {
+  padding: 56px 0 28px;
+  border-bottom: 1px solid var(--garis);
+  margin-bottom: 28px;
+}
+
+.pageHead h1 {
+  margin: 0 0 10px;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 88px);
+  line-height: 0.95;
+}
+
+.pageHead p {
+  margin: 0;
+  color: var(--redup);
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 68ch;
+}
+
+.pageCta {
+  margin: 40px 0 0;
+}
+
+.small {
+  font-size: 14px;
+  color: var(--redup);
+  line-height: 1.55;
+}
+
+/* Glosarium */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--garis);
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  min-height: 48px;
+  padding: 0 18px;
+  border: 0;
+  background: transparent;
+  color: var(--redup);
+  font-weight: 800;
+  font-size: 17px;
+  cursor: pointer;
+  border-bottom: 4px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tabs button[aria-selected="true"] {
+  color: var(--krem);
+  border-bottom-color: var(--kuning);
+}
+
+.tabs span {
+  font-size: 13px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--panel2);
+  margin-left: 4px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chips button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--garis);
+  background: var(--panel);
+  color: var(--krem);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.chips button[aria-pressed="true"] {
+  background: var(--kuning);
+  color: var(--aspal);
+  border-color: var(--kuning);
+}
+
+.search {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--redup);
+}
+
+.search input {
+  min-height: 44px;
+  width: min(300px, 100%);
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--garis);
+  background: var(--panel);
+  color: var(--krem);
+  font-size: 16px;
+}
+
+.search input::placeholder {
+  color: #8f846f;
+}
+
+.count {
+  color: var(--redup);
+  font-size: 14px;
+  margin: 18px 0 14px;
+}
+
+.empty {
+  padding: 48px 24px;
+  text-align: center;
+  border: 2px dashed var(--garis);
+  border-radius: 12px;
+}
+
+.empty p {
+  margin: 0 0 16px;
+  font-size: 17px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+
+.effects {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.effects li {
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.14);
+}
+
+.cardM .effects b {
+  color: #ff8a5c;
+}
+
+.fact {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.14);
+  font-size: 13px !important;
+}
+
+.fact a {
+  font-weight: 800;
+  text-underline-offset: 3px;
+}
+
+.tileZone {
+  margin-bottom: 36px;
+}
+
+.tileZone h2 {
+  margin: 0 0 12px;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: 32px;
+  padding-bottom: 8px;
+  border-bottom: 6px solid var(--z);
+}
+
+.tileZone ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.tileZone li {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  padding: 14px;
+  background: var(--panel);
+  border-radius: 10px;
+}
+
+.tileNo {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--krem);
+  color: var(--aspal);
+  font-weight: 900;
+}
+
+.tileZone b {
+  display: block;
+  font-size: 16px;
+}
+
+.tileZone small {
+  color: color-mix(in srgb, var(--z) 55%, white);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.tileZone p {
+  margin: 6px 0 0;
+  color: var(--redup);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Peran */
+.roles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.role {
+  padding: 22px 22px 24px;
+  background: var(--panel);
+  border-radius: 12px;
+  scroll-margin-top: 80px;
+}
+
+.role h2 {
+  margin: 0 0 6px;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: 34px;
+}
+
+.roleBlurb {
+  margin: 0 0 16px;
+  color: var(--redup);
+}
+
+.bars {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.bars div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  gap: 4px 12px;
+  position: relative;
+}
+
+.bars dt {
+  font-size: 14px;
+  color: var(--redup);
+}
+
+.bars dd {
+  margin: 0;
+  font-weight: 800;
+  position: relative;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(255, 198, 26, 0.28) var(--w), rgba(255, 255, 255, 0.04) var(--w));
+}
+
+.roleFacts {
+  margin: 16px 0 0;
+  padding-left: 18px;
+  color: var(--redup);
+  line-height: 1.7;
+}
+
+.roleFacts b {
+  color: var(--krem);
+}
+
+.roleCards h3 {
+  margin: 18px 0 8px;
+  font-size: 15px;
+}
+
+.roleCards ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.roleCards li {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--aspal);
+  border-left: 4px solid;
+}
+
+.good {
+  border-left-color: #4caf50 !important;
+}
+
+.bad {
+  border-left-color: var(--lava) !important;
+}
+
+/* Bencana */
+.disasters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.disaster {
+  background: var(--panel);
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-margin-top: 80px;
+  padding-bottom: 20px;
+}
+
+.disaster header {
+  background: var(--z);
+  padding: 14px 22px 12px;
+  color: #15110c;
+}
+
+.disaster header small {
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.disaster h2 {
+  margin: 2px 0 0;
+  font-family: var(--spanduk);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.disaster > p,
+.disaster > dl {
+  margin: 14px 22px 0;
+  line-height: 1.6;
+}
+
+.scene {
+  color: var(--krem);
+  font-style: italic;
+}
+
+.disaster > p:not(.scene) {
+  color: var(--redup);
+}
+
+.damage {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.damage div {
+  background: var(--aspal);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.damage dt {
+  font-size: 13px;
+  color: var(--redup);
+}
+
+.damage dd {
+  margin: 2px 0 0;
+  font-family: var(--spanduk);
+  font-size: 26px;
+  color: var(--lava);
+}
+
+.crisis {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.crisis table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.crisis th,
+.crisis td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--garis);
+}
+
+.crisis th {
+  color: var(--redup);
+  font-size: 14px;
+}
+
+.crisis tbody tr:last-child td {
+  color: var(--lava);
+  font-weight: 800;
+}
+
+.nationalList {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.nationalList li {
+  padding: 16px;
+  border: 1px solid var(--garis);
+  border-radius: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.nationalList span {
+  color: var(--redup);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ---------- Layar sedang ---------- */
+@media (max-width: 960px) {
+  .heroImg {
+    width: 100%;
+    opacity: 0.55;
+  }
+
+  .heroFade {
+    background: linear-gradient(90deg, rgba(21, 17, 12, 0.95) 0%, rgba(21, 17, 12, 0.6) 100%), linear-gradient(0deg, var(--aspal) 0%, rgba(21, 17, 12, 0) 30%);
+  }
+
+  .split,
+  .cardsBand,
+  .crisis {
+    grid-template-columns: 1fr;
+  }
+
+  .zoneStrip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .zoneTile:nth-child(3) {
+    border-left: 0;
+  }
+
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .roleChips,
+  .nationalList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .roles,
+  .disasters,
+  .tileZone ol {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- HP ---------- */
+@media (max-width: 720px) {
+  .navInner,
+  .heroText,
+  .wrap,
+  .wrapFlat,
+  .page,
+  .footerInner {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .burger {
+    display: inline-flex;
+  }
+
+  .links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px 16px 16px;
+    background: var(--aspal);
+    border-bottom: 1px solid var(--garis);
+  }
+
+  .linksOpen {
+    display: flex;
+  }
+
+  .links .navCta {
+    margin: 8px 0 0;
+    justify-content: center;
+  }
+
+  .links a[aria-current="page"] {
+    box-shadow: inset 3px 0 0 var(--kuning);
+  }
+
+  .hero {
+    min-height: 0;
+  }
+
+  .heroText {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .ctaRow > * {
+    width: 100%;
+  }
+
+  .meters li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .zoneStrip,
+  .steps,
+  .roleChips,
+  .nationalList {
+    grid-template-columns: 1fr;
+  }
+
+  .zoneTile + .zoneTile {
+    border-left: 0;
+  }
+
+  .zoneTile {
+    min-height: 0;
+  }
+
+  .fan {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 12px 10px;
+  }
+
+  .fan .cardK,
+  .fan .cardM {
+    padding: 8px;
+    border-width: 4px;
+  }
+
+  .fan h3 {
+    font-size: 13px;
+  }
+
+  .fan small {
+    font-size: 8px;
+  }
+
+  .search,
+  .search input {
+    width: 100%;
+  }
+
+  .bars div {
+    grid-template-columns: 1fr;
+  }
+
+  .damage {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .zoneTile {
+    transition: none;
+  }
+}
