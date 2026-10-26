@@ -1,102 +1,147 @@
 <p align="center">
-  <img src="docs/logo.svg" alt="+62WNIPOLY" width="520">
+  <img src="docs/logo.svg" alt="+62WNIPOLY" width="560">
+</p>
+
+<h3 align="center">Bukan siapa yang paling kaya. Siapa yang paling kuat bertahan jadi WNI.</h3>
+
+<p align="center">
+  Monopoli satire Indonesia dalam 3D. Gratis, langsung main di browser, desktop maupun HP.
 </p>
 
 <p align="center">
-  <b>Bukan siapa yang paling kaya. Siapa yang paling kuat bertahan jadi WNI.</b><br>
-  Monopoli satire Indonesia dalam 3D, langsung main di browser.
+  <a href="https://62wnipoly.vercel.app"><img alt="Main sekarang" src="https://img.shields.io/badge/MAIN%20SEKARANG-62wnipoly.vercel.app-ffc61a?style=for-the-badge&labelColor=15110c"></a>
 </p>
 
 <p align="center">
-  <a href="#main-sekarang"><b>Main sekarang</b></a> ·
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white">
+  <img alt="React" src="https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white">
+  <img alt="Three.js" src="https://img.shields.io/badge/Three.js-r186-000000?logo=threedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178c6?logo=typescript&logoColor=white">
+  <img alt="Vitest" src="https://img.shields.io/badge/Vitest-186%20tes-6e9f18?logo=vitest&logoColor=white">
+  <img alt="Vercel" src="https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white">
+</p>
+
+<p align="center">
+  <a href="#tentang">Tentang</a> ·
   <a href="#cara-main">Cara main</a> ·
   <a href="#fitur">Fitur</a> ·
-  <a href="#menjalankan-sendiri">Menjalankan sendiri</a>
+  <a href="#teknologi">Teknologi</a> ·
+  <a href="#menjalankan-sendiri">Menjalankan sendiri</a> ·
+  <a href="#kredit">Kredit</a>
 </p>
+
+<br>
 
 ![Papan 3D +62WNIPOLY: Monas di tengah, empat zona bencana di sekelilingnya](docs/screenshots/game-desktop.jpg)
 
 ## Tentang
 
-+62WNIPOLY adalah game papan 3D bergaya Monopoli, tapi tanpa hotel dan tanpa properti. Kamu warga biasa: gaji langsung dipotong pajak, harga beras naik tiap ronde, dan bencana datang bergiliran ke empat penjuru papan. Pemenangnya bukan yang paling kaya, tapi yang paling lama bertahan hidup.
++62WNIPOLY adalah game papan 3D bergaya Monopoli, tanpa hotel dan tanpa properti. Kamu warga biasa: gaji langsung dipotong pajak, harga beras naik tiap ronde, dan bencana datang bergiliran ke empat penjuru papan. **Pemenangnya bukan yang paling kaya, tapi yang paling lama bertahan hidup.**
 
 Setiap kartu menyindir kejadian yang benar terjadi di Indonesia, lengkap dengan fakta singkat dan tautan sumber beritanya.
 
-## Main sekarang
-
-Buka situsnya, pilih peran, pilih jumlah bot, langsung main. Tidak perlu daftar akun.
-
-<!-- URL demo diisi setelah deploy -->
-**Demo:** _menyusul_
+| | |
+|---|---|
+| **Pemain** | 1 orang melawan 1-3 bot, tiga tingkat kesulitan |
+| **Lama main** | Paling lama 30 ronde |
+| **Perangkat** | Browser desktop dan HP, tanpa instalasi, tanpa akun |
+| **Bahasa** | Indonesia |
 
 ## Cara main
 
-![Layar aturan sebelum ronde pertama](docs/screenshots/aturan.jpg)
+<img align="right" src="docs/screenshots/aturan.jpg" alt="Layar aturan sebelum ronde pertama" width="360">
 
-- **Jaga tiga hal:** Sehat, Dompet, dan Makan. Satu porsi makan habis tiap giliran.
-- **Kamu gugur kalau:** sehat habis, kelaparan 2 giliran berturut-turut, atau utang lewat Rp1 juta (diburu pinjol).
-- **Menang:** jadi WNI terakhir yang masih hidup, atau yang paling kuat bertahan saat ronde 30 habis.
-- **Tiap giliran:** tahan tombol untuk mengocok dadu, lepas untuk melempar, lalu pilih aksi di petak tujuan: kerja, makan, istirahat, atau aksi khas petak itu.
-- **Level Krisis** naik tiap 2 ronde: bencana makin sering dan makin parah, harga makin mahal.
+**Jaga tiga hal:** Sehat, Dompet, dan Makan. Satu porsi makan habis tiap giliran.
+
+**Kamu gugur kalau** sehat habis, kelaparan 2 giliran berturut-turut, atau utang lewat Rp1 juta (diburu pinjol).
+
+**Menang:** jadi WNI terakhir yang masih hidup, atau yang paling kuat bertahan saat ronde 30 habis.
+
+**Tiap giliran:** tahan tombol untuk mengocok dadu, lepas untuk melempar, lalu pilih aksi di petak tujuan: kerja, makan, istirahat, atau aksi khas petak itu.
+
+**Level Krisis** naik tiap 2 ronde. Bencana makin sering dan makin parah, harga makin mahal.
+
+<br clear="right">
 
 | Tombol | Fungsi |
 |---|---|
 | Tahan `Spasi`, lepas | Kocok dan lempar dadu |
 | `Enter` | Lempar cepat |
-| `1`-`9` | Pilih aksi |
-| `+` / `-` / `0` | Perbesar, perkecil, kembali ke posisi kamera awal |
+| `1` - `9` | Pilih aksi |
+| `+` &nbsp;`-` &nbsp;`0` | Perbesar, perkecil, kembali ke posisi kamera awal |
 | Klik petak | Lihat isi petak dan siapa yang berdiri di sana |
 
 ## Fitur
 
-- **Empat zona, empat bencana.** Pesisir banjir di selatan, hutan terbakar di barat, gunung meletus di utara, pusat kekuasaan di timur. Saat bencana datang, air naik merendam dunia sampai papan tersisa seperti pulau, lahar merambat sampai lapangan Monas, dan konvoi polisi mengawal mobil pejabat.
-- **30 kartu satire bersumber.** Kesempatan (kuning) dan Musibah (hitam). Sebagian menimpa semua pemain, sebagian paling keras ke satu profesi: BBM langka paling menyiksa ojol, gaji honorer ditahan paling menyiksa guru.
-- **Enam peran** dengan kelebihan dan beban berbeda: buruh kena PHK, driver ojol, guru honorer, petani, mahasiswa, pedagang pasar.
-- **Dadu berfisika** yang saling tabrak, kartu yang terbang keluar dari dek di papan, kurungan yang jatuh saat masuk Lapas VIP.
-- **Lawan 1-3 bot** dengan tiga tingkat kesulitan. Mesin aturannya deterministik dan diuji dengan simulasi ratusan permainan.
-- **Jalan di HP.** Tata letak khusus layar sempit, kualitas grafis menyesuaikan perangkat dan turun otomatis kalau fps jatuh.
+| | |
+|---|---|
+| **Empat zona, empat bencana** | Pesisir banjir di selatan, hutan terbakar di barat, gunung meletus di utara, pusat kekuasaan di timur. Air naik merendam dunia sampai papan tersisa seperti pulau, lahar merambat ke lapangan Monas, konvoi polisi mengawal mobil pejabat. |
+| **30 kartu satire bersumber** | Kesempatan (kuning) dan Musibah (hitam). Sebagian menimpa semua pemain, sebagian paling keras ke satu profesi: BBM langka menyiksa ojol, gaji honorer ditahan menyiksa guru. |
+| **Enam peran** | Buruh kena PHK, driver ojol, guru honorer, petani, mahasiswa, pedagang pasar. Masing-masing punya kelebihan dan beban sendiri. |
+| **Rasa main** | Dadu berfisika yang saling tabrak, kartu terbang keluar dari dek di papan, kurungan jatuh saat masuk Lapas VIP, polisi muncul di petak Pungli. |
+| **Bot dan mesin aturan** | Aturan deterministik dengan RNG ber-seed, diuji simulasi ratusan permainan agar tiap peran punya peluang adil. |
+| **Ramah HP** | Tata letak khusus layar sempit, kualitas grafis menyesuaikan perangkat dan turun otomatis saat fps jatuh. |
 
 <p align="center">
-  <img src="docs/screenshots/game-hp.jpg" alt="Tampilan di HP" width="260">
-  &nbsp;
-  <img src="docs/screenshots/glosarium.jpg" alt="Glosarium kartu" width="520">
+  <img src="docs/screenshots/game-hp.jpg" alt="Tampilan di HP" height="420">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/glosarium.jpg" alt="Glosarium kartu" height="420">
 </p>
 
-Situsnya juga punya [glosarium kartu dan petak](src/app/(site)/glosarium), halaman [peran](src/app/(site)/peran), dan halaman [bencana](src/app/(site)/bencana).
+Situsnya juga punya halaman **Glosarium** (semua kartu dan 40 petak), **Peran**, dan **Bencana**.
 
 ![Beranda situs](docs/screenshots/beranda.jpg)
 
+## Teknologi
+
+| Lapisan | Teknologi | Dipakai untuk |
+|---|---|---|
+| Kerangka web | [Next.js 16](https://nextjs.org) (App Router), [React 19](https://react.dev), [TypeScript 7](https://www.typescriptlang.org) | Situs statis, halaman game, katalog aset |
+| Grafis 3D | [Three.js r186](https://threejs.org), [react-three-fiber 9](https://github.com/pmndrs/react-three-fiber), [drei 10](https://github.com/pmndrs/drei) | Dunia, papan, kamera, monitor performa |
+| Efek visual | [postprocessing](https://github.com/pmndrs/postprocessing) | Bloom, oklusi ambien (N8AO), tone mapping ACES, SMAA |
+| Teks 3D | [troika-three-text](https://github.com/protectwise/troika) | Judul petak tajam (SDF) dari jarak dan sudut berapa pun |
+| Model 3D | glTF dari [KayKit](https://kaylousberg.com) dan [Kenney](https://kenney.nl) (CC0) | Mobil, gedung kota, perabot jalan, kereta; atlas warnanya diredupkan agar senada |
+| Aset prosedural | Geometri Three.js buatan sendiri | Monas, gedung dewan, gunung, banjir, lahar, asap, dadu, kartu |
+| Suara | Web Audio API | Semua efek suara disintesis, tanpa file audio |
+| Tes | [Vitest 5](https://vitest.dev) | 186 tes: aturan, simulasi keseimbangan, aset |
+| Hosting | [Vercel](https://vercel.com) | Deploy otomatis tiap push ke `main` |
+
+### Arsitektur
+
+```mermaid
+flowchart LR
+  engine["engine/<br>aturan, kartu, bot, simulasi"] --> game["game/<br>HUD, dadu, kartu, sinematik, suara"]
+  assets["assets3d/<br>papan, zona, model, efek"] --> game
+  scene["scene/<br>cahaya, langit, pascaproses"] --> game
+  game --> main["/main<br>layar main"]
+  engine --> site["(site)/<br>beranda, glosarium, peran, bencana"]
+  assets --> catalog["/assets<br>katalog aset 3D"]
+```
+
+Mesin aturan (`src/engine`) murni tanpa React atau Three.js: `applyAction(state, action)` selalu menghasilkan keadaan baru, jadi bisa dipakai bersama oleh bot, tes, dan kelak mode online.
+
 ## Menjalankan sendiri
 
-Butuh Node.js 20.9 atau lebih baru.
+Butuh [Node.js](https://nodejs.org) 20.9 atau lebih baru.
 
 ```bash
 npm install
+```
+
+```bash
 npm run dev
 ```
 
-Buka `http://localhost:3000`. Halaman lain:
+Buka `http://localhost:3000`. Halaman lain: `/main` langsung ke layar pilih peran, `/assets` katalog semua aset 3D.
 
-- `/main` langsung ke layar pilih peran
-- `/assets` katalog semua aset 3D
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Server pengembangan |
+| `npm test` | Jalankan semua tes |
+| `npm run build` | Build produksi |
+| `npm start` | Jalankan hasil build |
 
-```bash
-npm test
-```
-
-```bash
-npm run build
-```
-
-## Teknologi
-
-- [Next.js](https://nextjs.org) (App Router) dan React
-- [Three.js](https://threejs.org) lewat [react-three-fiber](https://github.com/pmndrs/react-three-fiber) dan [drei](https://github.com/pmndrs/drei)
-- Pascaproses dengan [postprocessing](https://github.com/pmndrs/postprocessing), teks 3D tajam dengan [troika-three-text](https://github.com/protectwise/troika)
-- Suara disintesis langsung dengan Web Audio, tanpa file audio
-- Tes dengan [Vitest](https://vitest.dev)
-
-## Struktur proyek
+### Struktur proyek
 
 ```
 src/
@@ -108,7 +153,7 @@ src/
 public/
   models/     model 3D CC0 (KayKit, Kenney) beserta lisensinya
   fonts/      Barlow Condensed (OFL)
-docs/         riset aset, audit, logo, tangkapan layar
+docs/         riset dan audit aset, logo, tangkapan layar
 ```
 
 ## Kredit
