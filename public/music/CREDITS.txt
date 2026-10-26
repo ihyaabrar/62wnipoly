@@ -1,0 +1,15 @@
+Musik latar +62WNIPOLY
+
+gamelan-keraton-1.ogg  "Gamelan angka 1 Kraton Ngayogyakarta"
+gamelan-keraton-2.ogg  "Gamelan angka 2 Kraton Ngayogyakarta"
+
+Rekaman gamelan Jawa oleh para penabuh Keraton Ngayogyakarta Hadiningrat (Keraton Yogyakarta).
+Perekam: RTB45, 6 November 2014.
+Sumber: Wikimedia Commons
+  https://commons.wikimedia.org/wiki/File:Gamelan_angka_1_Kraton_Ngayogyakarta.ogg
+  https://commons.wikimedia.org/wiki/File:Gamelan_angka_2_Kraton_Ngayogyakarta.ogg
+Lisensi: Creative Commons Attribution 4.0 International (CC BY 4.0)
+  https://creativecommons.org/licenses/by/4.0/
+
+Berkas digunakan apa adanya (tanpa diedit); pemutaran di game menambahkan fade masuk/keluar,
+penyamaan volume, dan sedikit perubahan kecepatan menurut Level Krisis.

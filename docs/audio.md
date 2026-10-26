@@ -10,7 +10,18 @@ Semua suara disintesis dengan Web Audio: tanpa file audio, unduhan nol, dan nada
 - Penutup menang dan gugur hanya empat nada pendek, dan kalah memakai suara yang sama dengan pemain gugur di tengah game.
 - Satu tombol bisukan untuk semuanya, tanpa volume terpisah.
 
-## Yang ditambahkan
+## Pembaruan: musik rekaman asli
+
+Musik sintesis pertama dinilai kurang enak, jadi musik latar sekarang memakai rekaman gamelan asli:
+
+- "Gamelan angka 1" (2:13) dan "Gamelan angka 2" (3:56), abdi dalem Keraton Yogyakarta, direkam RTB45 tahun 2014, lisensi **CC BY 4.0** (cukup mencantumkan nama, sudah ada di README dan `public/music/CREDITS.txt`).
+- Dipilih setelah mencari di Wikimedia Commons. Rekaman bergaya gamelan lain berlisensi CC BY-SA (mewajibkan lisensi yang sama untuk turunannya) atau Artistic 2.0, jadi tidak dipakai. Tidak ada rekaman gamelan CC0 penuh yang ditemukan.
+- Rekaman berakhir dengan memudar, jadi diputar bergantian dengan crossfade 3 detik. Angka 1 untuk Level Krisis 1-3, angka 2 (lebih padat) untuk level 4 ke atas, ganti langsung saat ambang terlewati.
+- Kecepatan naik sampai 4,8% saat krisis (nada bergeser kurang dari satu semiton), ditambah dengung sintesis di level 4 ke atas.
+- Volume angka 2 disamakan dengan angka 1 (rekamannya sekitar 40% lebih keras).
+- Kalau browser tidak bisa memutar Ogg Vorbis atau berkas gagal dimuat, musik sintesis di bawah dipakai sebagai cadangan.
+
+## Musik sintesis (cadangan) dan efek yang ditambahkan
 
 | Bagian | Isi |
 |---|---|
