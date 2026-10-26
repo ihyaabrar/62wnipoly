@@ -95,7 +95,7 @@ export function emitter(name: string, o: SmokeOpts = {}) {
   const op = o.opacity ?? 0.8;
   const c = new THREE.Color();
   let intensity = 1;
-  g.userData.setIntensity = (v: number) => (intensity = v);
+  g.userData.setIntensity = (v: number) => (intensity = THREE.MathUtils.clamp(v, 0, 1.5));
   return onUpdate(g, (t) => {
     meta.forEach((m, i) => {
       const k = (t * speed + m.phase) % 1;
@@ -114,7 +114,7 @@ export function smoke(o: SmokeOpts = {}) {
 }
 
 export function flames(o: SmokeOpts = {}) {
-  return emitter("lidah-api", { count: 18, color: "#fff2a8", colorEnd: "#ff3b0a", size: [0.35, 0.08], rise: 0.7, spread: 0.15, drift: [0, 0], speed: 1.4, opacity: 1, additive: true, ...o });
+  return emitter("lidah-api", { count: 18, color: "#eebc70", colorEnd: "#c66b3b", size: [0.35, 0.08], rise: 0.7, spread: 0.15, drift: [0, 0], speed: 1.4, opacity: 0.8, additive: false, ...o });
 }
 
 /** Bara api: titik kecil menyala yang naik berkelok. */
@@ -181,7 +181,7 @@ export function lightning(height = 3, seed = 9) {
     flash = Math.max(0, flash - dt);
     const on = flash > 0 && Math.sin(flash * 90) > -0.3;
     line.visible = on;
-    light.intensity = on ? 40 : 0;
+    light.intensity = on ? 3 : 0;
     light.position.set(pos[6], height * 0.7, pos[8]);
   });
 }
@@ -233,11 +233,10 @@ export function clouds(count = 6, span = 20, seed = 13) {
     g.add(c);
     return c;
   });
-  return onUpdate(g, (_t, dt) => {
-    for (const c of items) {
-      c.position.x += c.userData.speed * dt;
-      if (c.position.x > span + 4) c.position.x = -span - 4; // muncul lagi dari sisi barat
-    }
+  items.forEach(c => {c.userData.startX=c.position.x;c.userData.noFit=true;});
+  g.userData.noFit=true;
+  return onUpdate(g, (t) => {
+    for (const c of items) c.position.x = ((c.userData.startX + t*c.userData.speed + span+4) % (2*span+8)) - span-4;
   });
 }
 

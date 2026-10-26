@@ -1,5 +1,7 @@
 # Riset aset 3D +62WNIPOLY
 
+> Pembaruan implementasi: keluarga rumah, tenda, vegetasi, karakter lingkungan dan kendaraan telah ditingkatkan; beberapa model lama tidak lagi dimuat. Lihat [hasil implementasi 125 entri](asset-audit/IMPLEMENTASI.md) untuk status terbaru. Tabel riset di bawah dipertahankan sebagai catatan tahap sebelumnya.
+
 Tujuan: semua aset terlihat satu gaya, warnanya seragam dan nyaman di mata, tulisan di papan jelas, dan tetap ringan di HP.
 
 ## Masalah sekarang
@@ -81,6 +83,10 @@ Pemuat ada di `src/assets3d/models.ts`. Model dimuat sekali sebelum dunia dibang
 | Batu | Model | KayKit Medieval Hexagon |
 | Rumah terendam, rumah tertimbun abu, rumah roboh | Model | KayKit Medieval Hexagon |
 | Tenda pengungsian | Model | KayKit Medieval Hexagon |
+| Kereta (rangkaian KRL 3 gerbong) | Model | Kenney Train Kit |
+| Pesawat | Prosedural baru (badan lathe, sayap menyapu, 2 mesin) | Tidak ada model pesawat CC0 bergaya sama |
+| Jalan raya | Prosedural baru (aspal bertekstur, garis tepi, trotoar di jalan timur) | - |
+| Judul petak | Teks SDF (troika-three-text) dengan font Barlow Condensed Bold | Google Fonts, lisensi OFL |
 | Sawit, kelapa, pohon terbakar/hangus | Prosedural | Tidak ada padanan CC0 dengan gaya sama |
 | Monas, gedung dewan, bursa, bank, gunung, 4 bangunan pojok, bidak | Prosedural | Landmark khas Indonesia: perlu Meshy (berbayar) atau Blender |
 | Efek: lahar, banjir, asap, api, dadu, kartu | Prosedural | Sengaja tetap prosedural |
@@ -89,7 +95,11 @@ Model ada di `public/models/kaykit/` dan `public/models/kaykit-medieval/`, masin
 
 ## Kredit
 
-Model 3D oleh Kay Lousberg (www.kaylousberg.com), paket KayKit City Builder Bits dan KayKit Medieval Hexagon, lisensi CC0. Kredit tidak wajib tapi dicantumkan sebagai terima kasih.
+- Model 3D oleh Kay Lousberg (www.kaylousberg.com), paket KayKit City Builder Bits dan KayKit Medieval Hexagon, lisensi CC0.
+- Kereta dari Kenney Train Kit (www.kenney.nl), lisensi CC0.
+- Font Barlow Condensed oleh The Barlow Project Authors, SIL Open Font License 1.1 (`public/fonts/OFL.txt`).
+
+Kredit CC0 tidak wajib tapi dicantumkan sebagai terima kasih.
 
 ## Sumber
 

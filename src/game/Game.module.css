@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Palet HUD sama dengan situs: panel aspal hangat, teks krem, aksen kuning rambu.
  * Merah/hijau dibuat lembut supaya naik-turun angka tetap terbaca tanpa menyilaukan di atas papan 3D.
  */
@@ -42,9 +42,11 @@
   flex-wrap: wrap;
 }
 
+/* Huruf spanduk (sama dengan situs) untuk logo, judul, dan tombol utama. */
 .brand {
-  font-weight: 900;
-  font-size: 20px;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: 22px;
   letter-spacing: 0.5px;
 }
 
@@ -55,7 +57,7 @@
 .stat {
   display: flex;
   flex-direction: column;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -97,7 +99,7 @@
   background: var(--accent);
   color: #111;
   font-weight: 800;
-  font-size: 11px;
+  font-size: 12px;
   padding: 2px 6px;
   border-radius: 4px;
   animation: blink 1s steps(2) infinite;
@@ -300,7 +302,7 @@
 .pname small {
   font-weight: 400;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bar {
@@ -338,7 +340,7 @@
 }
 
 .badge {
-  font-size: 10px;
+  font-size: 12px;
   padding: 1px 6px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.1);
@@ -369,12 +371,82 @@
 }
 
 .tag {
-  font: 800 11px/1.2 system-ui, sans-serif;
+  font: 800 12px/1.2 system-ui, sans-serif;
   color: #fff;
   padding: 2px 7px;
   border-radius: 999px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Pemain yang bukan gilirannya: titik warna berinisial, supaya label tidak menumpuk di papan. */
+.tagDot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font: 800 12px/1 system-ui, sans-serif;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Angka yang mendekati batas gugur: merah dan berdenyut. */
+.danger {
+  color: #ff7a5c !important;
+  animation: dangerPulse 1s ease-in-out infinite;
+}
+
+@keyframes dangerPulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Label panjang di layar lebar, label pendek di HP. */
+.narrow {
+  display: none;
+}
+
+/* Layar aturan (sebelum ronde 1 dan dari tombol ?) */
+.rules {
+  width: min(460px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 20px 22px 22px;
+}
+
+.rules h2 {
+  margin: 0 0 4px;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+}
+
+.rules > p {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.rules dl {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.rules dt {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.rules dd {
+  margin: 2px 0 0;
+  line-height: 1.5;
+}
+
+.rules .primary {
+  margin-top: 18px;
 }
 
 /* Chip dampak pilihan */
@@ -387,7 +459,7 @@
 
 .evGood,
 .evBad {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 999px;
@@ -627,7 +699,7 @@
 
 .hint {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 /* ---------- Panel aksi ---------- */
@@ -658,8 +730,10 @@
   border: 0;
   border-radius: 10px;
   padding: 14px;
-  font-size: 17px;
-  font-weight: 800;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-size: 21px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
   cursor: pointer;
   background: var(--accent);
   color: #1a1408;
@@ -726,7 +800,7 @@
   background: var(--danger);
   color: #fff;
   font-weight: 800;
-  font-size: 11px;
+  font-size: 12px;
   padding: 3px 8px;
   border-radius: 4px;
   flex-shrink: 0;
@@ -850,7 +924,7 @@
 
 .deck {
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: 2px;
   color: var(--deckAccent);
@@ -858,8 +932,11 @@
 
 .card h2 {
   margin: 4px 0 10px;
-  font-size: 24px;
-  line-height: 1.15;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  letter-spacing: 0.3px;
+  line-height: 1.1;
 }
 
 .card p {
@@ -898,7 +975,7 @@
 
 .fact b {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -992,8 +1069,9 @@
 }
 
 .hero {
-  font-size: clamp(40px, 9vw, 72px);
-  font-weight: 900;
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-size: clamp(44px, 9vw, 80px);
+  font-weight: 400;
   margin: 8px 0 0;
   line-height: 1;
 }
@@ -1111,18 +1189,116 @@ fieldset.field {
 }
 
 /* ---------- Layar kecil ---------- */
+/*
+ * HP: papan harus tetap terlihat minimal separuh layar.
+ * Bar atas satu baris, pemain jadi strip 4 chip di bawahnya, panel petak jadi lembar bawah
+ * yang menutup panel aksi selama terbuka (bukan menimpa papan).
+ */
 @media (max-width: 760px) {
-  .tilePanel {
-    top: 180px;
-    left: 12px;
-    right: 12px;
-    width: auto;
-    max-height: calc(100dvh - 380px);
+  .wide {
+    display: none;
   }
 
-  /* HP: tombol kamera di kanan atas, di bawah bar atas, supaya tidak menimpa kartu pemain. */
+  .narrow {
+    display: inline;
+  }
+
+  .topbar {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    gap: 8px;
+    padding: 5px 8px;
+    flex-wrap: nowrap;
+  }
+
+  .brand {
+    display: none;
+  }
+
+  .stat {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .stat b {
+    font-size: 14px;
+  }
+
+  .crisisBar {
+    display: none; /* angka level sudah cukup di layar sempit */
+  }
+
+  .topbar .ghost,
+  .topbar summary {
+    padding: 6px 8px;
+    min-height: 36px;
+  }
+
+  /* Pilihan aksi ringkas: keterangan panjang disembunyikan (chip dampak tetap), daftar bisa digulir. */
+  .options {
+    max-height: 38dvh;
+    overflow-y: auto;
+  }
+
+  .option small {
+    display: none;
+  }
+
+  .players {
+    top: 62px;
+    bottom: auto;
+    left: 6px;
+    right: 6px;
+    width: auto;
+    flex-direction: row;
+    gap: 5px;
+    overflow: visible;
+    max-height: none;
+    padding-right: 0;
+  }
+
+  .player {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 7px;
+    border-left-width: 3px;
+  }
+
+  .player.active {
+    transform: none;
+  }
+
+  .pname {
+    font-size: 12px;
+  }
+
+  .pname span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pname small,
+  .badges {
+    display: none;
+  }
+
+  .bar {
+    margin: 4px 0 3px;
+  }
+
+  .nums {
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .nums span {
+    white-space: nowrap;
+  }
+
   .camCtl {
-    top: 128px;
+    top: 156px;
     transform: none;
     flex-direction: row;
   }
@@ -1134,31 +1310,15 @@ fieldset.field {
     height: 44px;
   }
 
-  .topbar {
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    gap: 10px;
-    padding: 6px 10px;
-  }
-
-  .brand {
-    font-size: 16px;
-  }
-
-  .players {
+  .tilePanel {
     top: auto;
-    bottom: 236px;
-    left: 8px;
-    right: 8px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: auto;
-    flex-direction: row;
-    overflow-x: auto;
-    max-height: none;
-  }
-
-  .player {
-    min-width: 170px;
+    max-height: 52dvh;
+    border-radius: 16px 16px 0 0;
+    z-index: 6;
   }
 
   .action {
@@ -1166,9 +1326,9 @@ fieldset.field {
   }
 
   .ticker {
-    left: 8px;
-    right: 8px;
-    bottom: 8px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
   }
 }
 

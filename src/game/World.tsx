@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { loadModels } from "@/assets3d/models";
@@ -7,8 +7,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { sfx } from "./sfx";
 import { OrbitControls } from "@react-three/drei";
 import { TILE_D, TILE_W, fullBoard, pawnSpot, tileInfo } from "@/assets3d/board";
+import { TILE_TOP, loadTileButtons, supportPawns } from "@/assets3d/tileMotion";
 import { PAWNS } from "@/assets3d/pawns";
-import { cyl, group, textTexture, tickAll } from "@/assets3d/kit";
+import { budgetLights, cyl, group, textTexture, tickAll } from "@/assets3d/kit";
 import { riotPolice } from "@/assets3d/props";
 import { Dice, type ThrowSpec } from "./Dice";
 import { DisasterFX, type Cinematic } from "./DisasterFX";
@@ -53,8 +54,9 @@ function Pawn({ player, slot, register }: { player: Player; slot: number; regist
     register(slot, obj);
   }, [register, slot, obj]);
   const shown = useRef(player.pos);
+  const landed = useRef(player.pos);
   const queue = useRef<{ tile: number; time: number }[]>([]);
-  const hop = useRef({ t: 1, dur: 1, from: new THREE.Vector3(), to: new THREE.Vector3() });
+  const hop = useRef({ t: 1, dur: 1, from: new THREE.Vector3(), to: new THREE.Vector3(), fromTile: player.pos, toTile: player.pos });
   // Animasi petak: kurungan Lapas jatuh menutup bidak, polisi Pungli muncul di samping bidak.
   const cage = useMemo(() => jailCage(), []);
   const cop = useMemo(() => {
@@ -74,10 +76,15 @@ function Pawn({ player, slot, register }: { player: Player; slot: number; regist
   }, [player.pos]);
 
   useFrame((st, dt) => {
+    const lastSupport = obj.userData.supportOffset ?? 0;
+    obj.position.y -= lastSupport;
+    obj.userData.supportOffset = 0;
     tickAll(obj, st.clock.elapsedTime, dt);
     const h = hop.current;
     if (h.t >= 1 && queue.current.length) {
       const next = queue.current.shift()!;
+      h.fromTile = landed.current;
+      h.toTile = next.tile;
       h.from.copy(obj.position);
       h.to.copy(pawnSpot(next.tile, slot));
       h.t = 0;
@@ -89,7 +96,14 @@ function Pawn({ player, slot, register }: { player: Player; slot: number; regist
       h.t = Math.min(1, h.t + dt / h.dur);
       obj.position.lerpVectors(h.from, h.to, h.t);
       obj.position.y += Math.sin(h.t * Math.PI) * (h.dur > STEP_TIME ? 1.2 : 0.35);
+      if (h.t >= 1) landed.current = h.toTile;
     }
+    obj.userData.tileContacts = h.t >= 1
+      ? [{ index: landed.current, weight: 1 }]
+      : [
+          { index: h.fromTile, weight: 1 - THREE.MathUtils.smoothstep(h.t, 0, 0.25) },
+          { index: h.toTile, weight: THREE.MathUtils.smoothstep(h.t, 0.65, 1) },
+        ];
     // Pemain gugur: bidak rebah.
     const fallen = !player.alive;
     obj.rotation.z += ((fallen ? Math.PI / 2 : 0) - obj.rotation.z) * 0.1;
@@ -117,7 +131,7 @@ function Pawn({ player, slot, register }: { player: Player; slot: number; regist
       f.cageY = Math.min(CAGE_UP, f.cageY + dt * 2.5);
     }
     cage.visible = f.cageY < CAGE_UP;
-    if (cage.visible) cage.position.copy(pawnSpot(JAIL_INDEX, slot)).setY(pawnSpot(JAIL_INDEX, slot).y + f.cageY);
+    if (cage.visible) cage.position.copy(pawnSpot(JAIL_INDEX, slot)).setY(pawnSpot(JAIL_INDEX, slot).y + f.cageY + lastSupport);
 
     // Polisi: muncul memantul di samping bidak, menagih sebentar, lalu tenggelam.
     if (f.copT >= 0) {
@@ -133,7 +147,7 @@ function Pawn({ player, slot, register }: { player: Player; slot: number; regist
       cop.rotation.z = Math.sin(t * 9) * 0.06;
       if (t > 3.35) f.copT = -1;
     }
-  });
+  }, -2);
   return (
     <>
       <primitive object={obj} />
@@ -385,7 +399,7 @@ function CardDecks({ draw, deckScreen }: { draw: Draw | null; deckScreen: RefObj
 }
 
 /** Bingkai kuning berdenyut di petak yang sedang dilihat infonya. */
-function TileHighlight({ index }: { index: number }) {
+function TileHighlight({ index, buttons }: { index: number; buttons: THREE.Object3D[] }) {
   const frame = useMemo(() => {
     const info = tileInfo(index);
     const w = info.kind === "sudut" ? TILE_D : TILE_W;
@@ -394,14 +408,17 @@ function TileHighlight({ index }: { index: number }) {
     const g = new THREE.Group();
     for (const [sx, sz, px, pz] of [[w, t, 0, TILE_D / 2], [w, t, 0, -TILE_D / 2], [t, TILE_D, w / 2, 0], [t, TILE_D, -w / 2, 0]]) {
       const b = new THREE.Mesh(new THREE.BoxGeometry(sx, 0.05, sz), m);
-      b.position.set(px, 0.17, pz);
+      b.position.set(px, TILE_TOP + 0.05, pz);
       g.add(b);
     }
     g.position.copy(info.position);
     g.rotation.y = info.rotationY;
     return { g, m };
   }, [index]);
-  useFrame((st) => (frame.m.emissiveIntensity = 0.6 + Math.sin(st.clock.elapsedTime * 5) * 0.4));
+  useFrame((st) => {
+    frame.m.emissiveIntensity = 0.6 + Math.sin(st.clock.elapsedTime * 5) * 0.4;
+    frame.g.position.y = buttons[index]?.userData.pressOffset ?? 0;
+  });
   return <primitive object={frame.g} />;
 }
 
@@ -411,7 +428,7 @@ function TilePicker({ onTile }: { onTile: (index: number) => void }) {
   return (
     <mesh
       rotation-x={-Math.PI / 2}
-      position-y={0.13}
+      position-y={TILE_TOP + 0.02}
       onClick={(e) => {
         if (e.delta > 6) return; // geser kamera, bukan klik
         let best = -1, bestD = 1.1;
@@ -459,7 +476,7 @@ export function World(props: WorldProps) {
       live = false;
     };
   }, []);
-  return ready ? <WorldScene {...props} /> : <Stage quality={props.quality} fogNear={40} fogFar={95} />;
+  return ready ? <WorldScene {...props} /> : <Stage quality={props.quality} fogNear={30} fogFar={80} />;
 }
 
 function WorldScene({ state, quality, follow, shakeKey, tagEls, onTile, shaking, throwSpec, onSettled, draw, cinematic, deckScreen, nav, inspect }: WorldProps) {
@@ -468,6 +485,8 @@ function WorldScene({ state, quality, follow, shakeKey, tagEls, onTile, shaking,
     pawnObjs.current[slot] = o;
   }, []);
   const board = useMemo(() => fullBoard(false), []);
+  const buttons = useMemo(() => Array.from({ length: BOARD_SIZE }, (_, i) => board.getObjectByName(`petak-${i}`)!), [board]);
+  useEffect(()=>{budgetLights(board,quality==="rendah"?0:quality==="sedang"?2:4);},[board,quality]);
   const hooks = useMemo(
     () => ({
       bursa: board.getObjectByName("gedung-bursa"),
@@ -487,17 +506,21 @@ function WorldScene({ state, quality, follow, shakeKey, tagEls, onTile, shaking,
     hooks.haze?.userData.setDensity?.(0.3 + crisis * 0.7);
   }, [state.crisis, state.ihsg, state.ihsgChange, state.halted, hooks]);
 
-  useFrame((st, dt) => tickAll(board, st.clock.elapsedTime, dt));
+  useFrame((st, dt) => {
+    loadTileButtons(buttons, pawnObjs.current);
+    tickAll(board, st.clock.elapsedTime, dt);
+    supportPawns(buttons, pawnObjs.current);
+  }, -1);
   return (
     <>
-      <Stage quality={quality} fogNear={40} fogFar={95} />
+      <Stage quality={quality} fogNear={30} fogFar={80} />
       <primitive object={board} />
       {state.players.map((p, i) => (
         <Pawn key={p.id} player={p} slot={i} register={register} />
       ))}
       <TagProjector pawns={pawnObjs} tagEls={tagEls} />
       {onTile && <TilePicker onTile={onTile} />}
-      {inspect !== null && <TileHighlight index={inspect} />}
+      {inspect !== null && <TileHighlight index={inspect} buttons={buttons} />}
       {state.phase !== "over" && <TurnRing pawns={pawnObjs} turn={state.turn} />}
       <Dice shaking={shaking} throwSpec={throwSpec} onSettled={onSettled} />
       <DisasterFX cinematic={cinematic} hooks={hooks} crisis={state.crisis} />

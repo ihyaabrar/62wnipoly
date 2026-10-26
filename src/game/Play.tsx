@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
+import { PerformanceMonitor } from "@react-three/drei";
 import { CHARACTERS, RULES, TILES, type CardDef } from "@/engine/data";
 import { CardArt } from "./CardArt";
 import { effectLines } from "./cardText";
 import { TilePanel } from "./TilePanel";
 import { applyAction, createGame, type Action, type GameState, type LogEvent, type Option } from "@/engine/game";
 import { chooseAction } from "@/engine/bot";
-import type { Quality } from "@/scene/Stage";
+import { QUALITY_DPR, type Quality } from "@/scene/Stage";
 import { World, PLAYER_COLORS, moveDuration, type CameraNav, type DeckScreen, type Draw, type Toast } from "./World";
 import type { ThrowSpec } from "./Dice";
 import { CINEMATIC_SECONDS, type Cinematic } from "./DisasterFX";
@@ -33,12 +34,48 @@ function evChips(ev: Option["ev"]) {
   return chips;
 }
 
+const QUALITY_KEY = "wnipoly-kualitas";
+const RULES_KEY = "wnipoly-aturan-dilihat";
+const QUALITIES: Quality[] = ["rendah", "sedang", "tinggi"];
+
+/**
+ * Kualitas awal: pilihan tersimpan kalau ada; kalau tidak, perangkat sentuh atau prosesor <= 4 inti
+ * mulai di "rendah" supaya HP kelas menengah tidak panas dan patah-patah.
+ */
+function initialQuality(): Quality {
+  try {
+    const saved = localStorage.getItem(QUALITY_KEY) as Quality | null;
+    if (saved && QUALITIES.includes(saved)) return saved;
+  } catch {
+    /* penyimpanan diblokir */
+  }
+  if (typeof window === "undefined") return "sedang";
+  const weak = window.matchMedia("(pointer: coarse)").matches || (navigator.hardwareConcurrency ?? 8) <= 4;
+  return weak ? "rendah" : "sedang";
+}
+
 export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: () => void; onRestart: () => void }) {
   const [state, setState] = useState<GameState>(() => createGame(setup.players, setup.seed));
   const [busy, setBusy] = useState(false);
   // Kartu yang sedang dibuka beserta pemiliknya (giliran sudah bisa pindah saat kartu tampil).
   const [shown, setShown] = useState<{ card: CardDef; owner: number; from: { x: number; y: number } } | null>(null);
-  const [quality, setQuality] = useState<Quality>("sedang");
+  const [quality, setQualityState] = useState<Quality>(initialQuality);
+  // Pilihan kualitas dari pemain disimpan; yang otomatis (turun karena fps rendah) tidak.
+  const setQuality = useCallback((q: Quality) => {
+    setQualityState(q);
+    try {
+      localStorage.setItem(QUALITY_KEY, q);
+    } catch {
+      /* penyimpanan diblokir: pilihan berlaku untuk sesi ini saja */
+    }
+  }, []);
+  const [showRules, setShowRules] = useState(() => {
+    try {
+      return localStorage.getItem(RULES_KEY) !== "1";
+    } catch {
+      return true;
+    }
+  });
   const [follow, setFollow] = useState(true);
   const [fast, setFast] = useState(false);
   const [mute, setMute] = useState(isMuted);
@@ -89,12 +126,18 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
     }
     const mine = next.players[owner], was = prev.players[owner];
     const disasters = fresh.filter((e) => e.kind === "disaster" && e.text.startsWith("Akhir ronde"));
-    if (disasters.length) {
-      setShakeKey((k) => k + 1);
-      setBanner(disasters.map((e) => e.text.replace(/^Akhir ronde \d+: /, "")));
-      setTimeout(() => setBanner(null), 2600);
-    } else if (mine.health < was.health) sfx.hurt();
-    else if (mine.wallet > was.wallet) sfx.coin();
+    // Level Krisis naik: ikut diumumkan di banner supaya eskalasinya terasa.
+    const crisisUp = next.crisis > prev.crisis ? [`Level Krisis naik ke ${next.crisis}: bencana makin sering, harga naik`] : [];
+    if (disasters.length || crisisUp.length) {
+      if (disasters.length) setShakeKey((k) => k + 1);
+      setBanner([...disasters.map((e) => e.text.replace(/^Akhir ronde \d+: /, "")), ...crisisUp]);
+      setTimeout(() => setBanner(null), 2600 + crisisUp.length * 800);
+    }
+    // Suara bencana diputar oleh sinematik; di luar itu, suara untung/rugi pemilik giliran.
+    if (!disasters.length) {
+      if (mine.health < was.health) sfx.hurt();
+      else if (mine.wallet > was.wallet) sfx.coin();
+    }
     if (fresh.some((e) => e.kind === "out")) sfx.out();
     if (next.phase === "over" && prev.phase !== "over") (next.winner !== null && !next.players[next.winner].bot ? sfx.win : sfx.out)();
   }, []);
@@ -231,6 +274,10 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
       if (e.key === "+" || e.key === "=") return nav.current?.zoom(0.8);
       if (e.key === "-") return nav.current?.zoom(1.25);
       if (e.key === "0") return nav.current?.reset();
+      if (showRules) {
+        if (e.key === "Escape") setShowRules(false);
+        return; // layar aturan terbuka: jangan lempar dadu atau pilih aksi di belakangnya
+      }
       if (e.key === "Escape" && inspect !== null) return setInspect(null);
       if (shown && cardIsMine && (e.key === " " || e.key === "Enter")) {
         e.preventDefault();
@@ -258,7 +305,7 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
     };
-  }, [myTurn, busy, shown, cardIsMine, state, act, startCharge, release, throwDice, inspect]);
+  }, [myTurn, busy, shown, cardIsMine, state, act, startCharge, release, throwDice, inspect, showRules]);
 
   const recent = useMemo(() => state.log.slice(-4).reverse(), [state.log]);
   const ranking = useMemo(
@@ -270,7 +317,9 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
   return (
     <div className={css.root}>
       <div className={css.canvas}>
-        <Canvas shadows camera={{ position: [4, 15, 16], fov: 42 }} dpr={[1, quality === "tinggi" ? 1.5 : 1]} gl={{ antialias: false }}>
+        <Canvas shadows camera={{ position: [4, 15, 16], fov: 42 }} dpr={[1, QUALITY_DPR[quality]]} gl={{ antialias: true }}>
+          {/* fps jatuh terus di bawah ~30: turunkan kualitas satu tingkat (tidak disimpan sebagai pilihan pemain). */}
+          <PerformanceMonitor bounds={() => [30, 55]} flipflops={2} onDecline={() => setQualityState((q) => (q === "tinggi" ? "sedang" : "rendah"))} />
           <World state={state} quality={quality} follow={follow} shakeKey={shakeKey} tagEls={tagEls} shaking={shaking} throwSpec={throwSpec} onSettled={onSettled} draw={draw} cinematic={cinematic} deckScreen={deckScreen} nav={nav} inspect={inspect} onTile={setInspect} />
         </Canvas>
       </div>
@@ -299,20 +348,26 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
 
       {/* Label nama dan angka melayang di atas bidak; posisinya digeser oleh World setiap frame. */}
       <div className={css.tagLayer} aria-hidden="true">
-        {state.players.map((p, i) => (
-          <div key={p.id} ref={(el) => void (tagEls.current[i] = el)} className={css.tagWrap}>
-            {toasts
-              .filter((t) => t.slot === i)
-              .map((t) => (
-                <span key={t.id} className={`${css.toast} ${t.good ? css.toastGood : css.toastBad}`}>
-                  {t.text}
-                </span>
-              ))}
-            <span className={css.tag} style={{ background: PLAYER_COLORS[i], opacity: p.alive ? 1 : 0.45 }}>
-              {p.bot ? p.name : "Kamu"}
-            </span>
-          </div>
-        ))}
+        {state.players.map((p, i) => {
+          // Hanya pemain yang sedang giliran yang diberi nama lengkap; lainnya titik warna berinisial,
+          // supaya label tidak menumpuk dan menutupi petak saat bidak berkumpul.
+          const active = i === state.turn && state.phase !== "over";
+          const label = p.bot ? p.name : "Kamu";
+          return (
+            <div key={p.id} ref={(el) => void (tagEls.current[i] = el)} className={css.tagWrap}>
+              {toasts
+                .filter((t) => t.slot === i)
+                .map((t) => (
+                  <span key={t.id} className={`${css.toast} ${t.good ? css.toastGood : css.toastBad}`}>
+                    {t.text}
+                  </span>
+                ))}
+              <span className={active ? css.tag : css.tagDot} style={{ background: PLAYER_COLORS[i], opacity: p.alive ? 1 : 0.45 }}>
+                {active ? label : label[0]}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       <header className={`${css.panel} ${css.topbar}`}>
@@ -325,25 +380,33 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
             {state.round}/{state.maxRounds}
           </b>
         </div>
-        <div className={css.stat} aria-label={`Level Krisis ${state.crisis}`}>
-          Level Krisis {state.crisis}
+        <div className={css.stat} aria-label={`Level Krisis ${state.crisis}`} title="Level Krisis naik tiap 2 ronde: makin banyak zona kena bencana, dampaknya makin parah, harga makin mahal.">
+          <span>
+            <span className={css.wide}>Level </span>Krisis {state.crisis}
+          </span>
           <div className={css.crisisBar}>
             {Array.from({ length: 12 }, (_, i) => (
               <i key={i} className={i < state.crisis ? css.on : undefined} />
             ))}
           </div>
         </div>
-        <div className={css.stat}>
+        <div className={css.stat} title="IHSG: indeks saham. Kalau anjlok, rupiah melemah dan harga makanan ikut naik. Saham bisa dibeli di petak Gedung Bursa.">
           IHSG
           <b className={pct < 0 ? css.down : css.up}>
             {Math.round(state.ihsg * 51.85).toLocaleString("id-ID")} {pct < 0 ? "▼" : "▲"}
-            {Math.abs(pct).toFixed(1)}%
+            <span className={css.wide}>{Math.abs(pct).toFixed(1)}%</span>
           </b>
         </div>
         {state.halted && <span className={css.halt}>TRADING HALT</span>}
         <div className={css.spacer} />
+        <button type="button" className={css.ghost} onClick={() => setShowRules(true)} aria-label="Cara bertahan (aturan)" title="Cara bertahan">
+          ?
+        </button>
         <details className={css.menu}>
-          <summary className={css.ghost}>Pengaturan</summary>
+          <summary className={css.ghost}>
+            <span className={css.wide}>Pengaturan</span>
+            <span className={css.narrow}>Menu</span>
+          </summary>
           <div className={`${css.panel} ${css.menuBody}`}>
             <button type="button" className={css.ghost} aria-pressed={follow} onClick={() => setFollow((v) => !v)}>
               {follow ? "Kamera: ikuti pemain" : "Kamera: bebas"}
@@ -395,15 +458,17 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
               <div className={css.bar} role="meter" aria-label="Kesehatan" aria-valuemin={0} aria-valuemax={RULES.maxHealth} aria-valuenow={hp}>
                 <i style={{ width: `${(hp / RULES.maxHealth) * 100}%`, background: color }} />
               </div>
+              {/* Angka berdenyut merah saat mendekati salah satu cara gugur. */}
               <div className={css.nums}>
                 <span>
-                  Sehat <b>{hp}</b>
+                  Sehat <b className={p.alive && hp <= 30 ? css.danger : undefined}>{hp}</b>
                 </span>
                 <span>
-                  <b className={p.wallet < 0 ? css.down : undefined}>{rpShort(p.wallet)}</b>
+                  <span className={css.wide}>Dompet </span>
+                  <b className={p.alive && p.wallet < RULES.debtLimit / 2 ? css.danger : p.wallet < 0 ? css.down : undefined}>{rpShort(p.wallet)}</b>
                 </span>
                 <span>
-                  Makan <b className={p.food === 0 ? css.down : undefined}>{p.food}</b>
+                  Makan <b className={p.alive && p.food <= 1 ? css.danger : undefined}>{p.food}</b>
                 </span>
               </div>
               <div className={css.badges}>
@@ -480,6 +545,60 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
           ))}
         </span>
       </footer>
+
+      {showRules && (
+        <div className={css.overlay} role="dialog" aria-modal="true" aria-labelledby="judul-aturan">
+          <div className={`${css.panel} ${css.rules}`}>
+            <h2 id="judul-aturan">Cara bertahan</h2>
+            <p>Bukan siapa yang paling kaya. Siapa yang paling lama bertahan.</p>
+            <dl>
+              <div>
+                <dt>Jaga tiga hal</dt>
+                <dd>
+                  <b>Sehat</b>, <b>Dompet</b>, dan <b>Makan</b>. Satu porsi makan habis tiap giliran. Angka yang hampir habis akan berdenyut merah.
+                </dd>
+              </div>
+              <div>
+                <dt>Kamu gugur kalau</dt>
+                <dd>
+                  Sehat habis, kelaparan {RULES.starveTurnsToDie} giliran berturut-turut, atau utang lewat {rpShort(-RULES.debtLimit)} (diburu pinjol).
+                </dd>
+              </div>
+              <div>
+                <dt>Menang</dt>
+                <dd>Jadi WNI terakhir yang masih hidup, atau yang paling kuat bertahan saat ronde {RULES.maxRounds} habis.</dd>
+              </div>
+              <div>
+                <dt>Tiap giliran</dt>
+                <dd>Tahan tombol untuk mengocok dadu, lepas untuk melempar. Di petak tujuan, pilih aksi: kerja, makan, istirahat, atau aksi khas petak itu. Klik petak mana pun untuk melihat isinya.</dd>
+              </div>
+              <div>
+                <dt>Level Krisis</dt>
+                <dd>Naik tiap 2 ronde. Bencana akhir ronde makin sering dan makin parah, harga makanan makin mahal.</dd>
+              </div>
+              <div>
+                <dt>IHSG</dt>
+                <dd>Kalau anjlok, rupiah melemah dan harga ikut naik. Saham bisa dibeli dan dijual di petak Gedung Bursa.</dd>
+              </div>
+            </dl>
+            <button
+              type="button"
+              className={css.primary}
+              autoFocus
+              onClick={() => {
+                setShowRules(false);
+                try {
+                  localStorage.setItem(RULES_KEY, "1");
+                } catch {
+                  /* penyimpanan diblokir: layar aturan muncul lagi di game berikutnya */
+                }
+              }}
+            >
+              Paham, mulai bertahan
+            </button>
+          </div>
+        </div>
+      )}
 
       {banner && (
         <div className={css.banner} role="status">

@@ -9,6 +9,7 @@ type Spec = { url: string; turn?: number };
 
 const kk = (file: string, turn = 0): Spec => ({ url: `/models/kaykit/${file}.gltf`, turn });
 const km = (file: string, turn = 0): Spec => ({ url: `/models/kaykit-medieval/${file}.gltf`, turn }); // KayKit Medieval Hexagon (CC0)
+const kt = (file: string): Spec => ({ url: `/models/kenney-train/${file}.glb`, turn: Math.PI / 2 }); // Kenney Train Kit (CC0), depan +z -> +x
 const CAR = Math.PI / 2; // mobil KayKit menghadap +z; aset kita menghadap +x
 
 /**
@@ -45,6 +46,9 @@ const MODELS = {
   rumahHijau: km("building_home_B_green"),
   rumahRoboh: km("building_destroyed"),
   tenda: km("tent"),
+  keretaDepan: kt("train-electric-city-a"),
+  keretaTengah: kt("train-electric-city-b"),
+  keretaBelakang: kt("train-electric-city-c"),
 } satisfies Record<string, Spec>;
 
 /** Empat rumah desa KayKit dengan warna atap berbeda (dipilih dari seed). */
@@ -86,6 +90,7 @@ function tone(tex: THREE.Texture, key: string) {
   const out = new THREE.CanvasTexture(cv);
   out.colorSpace = THREE.SRGBColorSpace;
   out.flipY = tex.flipY;
+  out.userData.sharedResource = true;
   out.magFilter = THREE.NearestFilter; // atlas gradasi: hindari warna tetangga ikut tercampur
   out.minFilter = THREE.LinearMipmapLinearFilter;
   toned.set(key, out);
@@ -98,7 +103,7 @@ export function loadModels() {
   if (ready) return ready;
   const loader = new GLTFLoader();
   ready = Promise.all(
-    (Object.entries(MODELS) as [ModelName, Spec][]).map(async ([name, spec]) => {
+    (Object.entries(MODELS) as [ModelName, Spec][]).filter(([name]) => !["pohonA", "pohonB", "tunggul", "rumahMerah", "rumahBiru", "rumahKuning", "rumahHijau", "rumahRoboh", "tenda"].includes(name)).map(async ([name, spec]) => {
       try {
         const gltf = await loader.loadAsync(spec.url);
         const src = gltf.scene;
@@ -109,7 +114,10 @@ export function loadModels() {
           if (!m.isMesh) return;
           m.castShadow = m.receiveShadow = true;
           // Satu material per atlas, dipakai bersama semua model: bakeStatic jadi bisa menggabungkannya.
-          const shared = materials.get(atlasKey);
+          m.geometry.userData.sharedResource = true;
+          const original = m.material as THREE.MeshStandardMaterial;
+          const materialKey = JSON.stringify([atlasKey, original.color?.getHex(), original.opacity, original.transparent, original.side, original.alphaTest, original.emissive?.getHex(), original.vertexColors]);
+          const shared = materials.get(materialKey);
           if (shared) {
             (m.material as THREE.Material).dispose();
             m.material = shared;
@@ -117,9 +125,10 @@ export function loadModels() {
           }
           const mat = m.material as THREE.MeshStandardMaterial;
           if (mat.map) mat.map = tone(mat.map, atlasKey);
-          mat.roughness = 0.75;
+          mat.roughness = 0.85;
           mat.metalness = 0;
-          materials.set(atlasKey, mat);
+          mat.userData.sharedResource = true;
+          materials.set(materialKey, mat);
         });
         // Bungkus: arah disamakan dengan aset prosedural, dasar model tepat di y = 0.
         const box = new THREE.Box3().setFromObject(src);
@@ -133,7 +142,7 @@ export function loadModels() {
         console.warn(`Model ${name} gagal dimuat, memakai aset prosedural.`, e);
       }
     }),
-  ).then(() => undefined);
+  ).then(async () => { await document.fonts?.load('900 16px "Barlow Condensed"'); });
   return ready;
 }
 
@@ -156,6 +165,7 @@ export function tint<T extends THREE.Object3D>(o: T, color: string, mix = 1) {
     const m = x as THREE.Mesh;
     if (!m.isMesh) return;
     const mt = (m.material as THREE.MeshStandardMaterial).clone();
+    mt.userData.sharedResource = false;
     mt.color.copy(c);
     m.material = mt;
   });

@@ -6,3 +6,4 @@ out
 next-env.d.ts
 .env*
 .claude/settings.local.json
+council-out/

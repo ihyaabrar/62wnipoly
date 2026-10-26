@@ -1,36 +1,16 @@
 import * as THREE from "three";
-import { C, ball, box, cyl, group, mat, onUpdate, rng, textTexture, texturedPlane } from "./kit";
+import { C, ball, box, softBox, cyl, group, mat, onUpdate, rng, textTexture, texturedPlane } from "./kit";
 import type { Slogan } from "./banners";
 import { emitter } from "./fx";
 import { model } from "./models";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import { citizen } from "./characters";
 
 // Properti kecil: orang kerumunan, aparat, spanduk, dadu, kartu, bantuan.
 
-export function person(shirt: string = C.navy, seed = 1) {
-  const r = rng(seed);
-  const s = 0.9 + r() * 0.2;
-  const skin = r() > 0.5 ? C.skin : C.skinDark;
-  const raised = r() > 0.6; // tangan terkepal ke atas
-  const g = group("warga",
-    cyl(0.05, 0.06, 0.18, ["#24345c", "#3b3b3b", "#5a4a3a"][Math.floor(r() * 3)], [0, 0, 0], 6),
-    cyl(0.06, 0.07, 0.2, shirt, [0, 0.18, 0], 7),
-    ball(0.06, skin, [0, 0.45, 0], 1),
-    cyl(0.018, 0.02, 0.18, shirt, [-0.08, 0.2, 0], 5, [0, 0, -0.15]),
-    cyl(0.018, 0.02, 0.18, shirt, raised ? [0.06, 0.36, 0] : [0.08, 0.2, 0], 5, [0, 0, raised ? 0 : 0.15]),
-  );
-  if (r() > 0.6) g.add(cyl(0.062, 0.066, 0.04, ["#1d1f24", "#f2c94c", "#c8102e"][Math.floor(r() * 3)], [0, 0.5, 0], 8)); // topi
-  g.scale.setScalar(s);
-  return g;
-}
+export function person(shirt: string = C.navy, seed = 1) { return citizen(shirt,seed); }
 
-export function riotPolice() {
-  return group("aparat",
-    cyl(0.06, 0.06, 0.2, C.ink),
-    cyl(0.07, 0.08, 0.22, "#3a4250", [0, 0.2, 0]),
-    ball(0.075, "#2b3038", [0, 0.48, 0], 1),
-    box(0.22, 0.32, 0.02, mat("#bfd4e6", { opacity: 0.6 }), [0, 0.1, 0.12]),
-  );
-}
+export function riotPolice() { const g=citizen(C.navy,1,"aparat");g.name="aparat";return g; }
 
 export function banner(s: Slogan) {
   const tex = textTexture(s.text, { bg: s.bg, fg: s.fg, w: 512, h: 192 });
@@ -61,6 +41,7 @@ export function barricade() {
     box(0.04, 0.3, 0.04, C.ink, [0.3, 0, 0]),
     box(0.7, 0.07, 0.03, C.red, [0, 0.2, 0]),
     box(0.7, 0.05, 0.03, C.white, [0, 0.12, 0]),
+    box(0.1,0.025,0.22,C.ink,[-0.3,0,0]),box(0.1,0.025,0.22,C.ink,[0.3,0,0]),
   );
 }
 
@@ -68,17 +49,17 @@ export function megaphone() {
   const horn = cyl(0.1, 0.035, 0.22, C.white, [0, 0, 0], 10);
   horn.rotation.z = Math.PI / 2;
   horn.position.set(0.11, 0.1, 0);
-  return group("toa", horn, box(0.04, 0.1, 0.04, C.ink, [-0.02, 0, 0]));
+  return group("toa", horn, cyl(0.082,0.082,0.006,C.ink,[-0.112,0.1,0],10,[0,0,Math.PI/2]), box(0.04, 0.1, 0.04, C.ink, [-0.02, 0, 0]));
 }
 
 export function tearGas() {
-  const cloud = emitter("asap-gas", { count: 20, color: "#e9eef0", colorEnd: "#c9d6db", size: [0.3, 1.6], rise: 0.9, spread: 1.4, drift: [0.2, 0.1], speed: 0.15, opacity: 0.6, seed: 12 });
+  const cloud = emitter("asap-gas", { count: 20, color: "#e9eef0", colorEnd: "#c9d6db", size: [0.12, 0.75], rise: 0.7, spread: 0.6, drift: [0.2, 0.1], speed: 0.15, opacity: 0.38, seed: 12 });
   return group("gas-air-mata", cloud, cyl(0.025, 0.025, 0.08, C.asphalt, [0, 0.02, 0], 8, [Math.PI / 2, 0, 0]));
 }
 
 /** Dadu dengan titik. value() membaca muka yang menghadap atas. */
 export function die(color: string = C.white) {
-  const body = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), mat(color, { roughness: 0.4 }));
+  const body = new THREE.Mesh(new RoundedBoxGeometry(0.3, 0.3, 0.3, 1, 0.02), mat(color, { roughness: 0.4 }));
   body.castShadow = true;
   const g = group("dadu", body);
   const pip = new THREE.CylinderGeometry(0.028, 0.028, 0.01, 10);
@@ -109,38 +90,36 @@ export function die(color: string = C.white) {
 export function card(kind: "kesempatan" | "musibah", title = kind === "kesempatan" ? "KESEMPATAN" : "MUSIBAH") {
   const bg = kind === "kesempatan" ? "#f2c94c" : C.ink;
   const fg = kind === "kesempatan" ? C.ink : "#ff5a5a";
-  const tex = textTexture([title, "?"], { bg, fg, w: 256, h: 384, border: fg });
-  const face = texturedPlane(0.4, 0.6, tex, [0, 0.011, 0], [-Math.PI / 2, 0, 0], false);
-  return group(`kartu-${kind}`, box(0.42, 0.02, 0.62, bg), face);
+  const tex = textTexture([title, kind === "kesempatan" ? "?" : "!"], { bg, fg, w: 256, h: 384, border: fg });
+  const face = texturedPlane(0.4, 0.6, tex, [0, 0.022, 0], [-Math.PI / 2, 0, 0], false);
+  return group(`kartu-${kind}`, softBox(0.42, 0.02, 0.62, bg, [0,0,0], 0.008), face);
 }
 
 export function aidBox() {
   const tex = textTexture(["BANSOS"], { bg: "#d8b98a", fg: C.merah, w: 256, h: 128 });
   return group("kotak-bansos",
-    box(0.4, 0.3, 0.3, "#d8b98a"),
+    softBox(0.4, 0.3, 0.3, "#bc9d72"),
     texturedPlane(0.34, 0.17, tex, [0, 0.15, 0.151], [0, 0, 0], false),
     box(0.41, 0.02, 0.06, "#b89a6a", [0, 0.3, 0]),
   );
 }
 
 export function riceSack() {
-  const tex = textTexture(["BERAS", "PREMIUM*", "*harga juga"], { bg: C.white, fg: C.navy, w: 256, h: 256 });
-  const body = cyl(0.17, 0.2, 0.42, C.white, [0, 0, 0], 8);
-  return group("karung-beras", body, cyl(0.08, 0.15, 0.08, C.white, [0, 0.42, 0], 8), texturedPlane(0.26, 0.26, tex, [0, 0.2, 0.19], [0, 0, 0], false));
+  const g=group("karung-beras");
+  const sack=ball(0.23,C.paper,[0,0.23,0],1);sack.scale.set(0.8,1.1,0.67);
+  g.add(sack,cyl(0.04,0.075,0.08,C.paper,[0,0.45,0],7),cyl(0.052,0.052,0.018,C.wood,[0,0.46,0],7));
+  g.add(texturedPlane(0.2,0.2,textTexture(["BERAS","PREMIUM*"],{bg:C.paper,fg:C.navy,w:256,h:256}),[0,0.25,0.148],[0,0,0],false));return g;
 }
 
 /** Ompreng: nampan makan stainless berpetak. */
 export function mealTray() {
-  const steel = mat("#c9d1d6", { metalness: 0.8, roughness: 0.3 });
-  return group("ompreng-makan",
-    box(0.5, 0.04, 0.36, steel),
-    box(0.5, 0.05, 0.02, steel, [0, 0.04, 0]),
-    box(0.02, 0.05, 0.36, steel, [0.05, 0.04, 0]),
-    ball(0.07, C.white, [-0.12, 0.06, 0.08]), // nasi
-    box(0.12, 0.03, 0.07, "#b5651d", [0.15, 0.04, 0.08]), // lauk
-    ball(0.04, C.leaf, [0.15, 0.06, -0.08]), // sayur
-    ball(0.04, "#9acd32", [-0.14, 0.05, -0.08]), // lauk mencurigakan
-  );
+  const steel=mat("#b2bec2",{metalness:0.65,roughness:0.5});
+  const g=group("ompreng-makan",softBox(0.5,0.02,0.36,steel));
+  for(const z of [-0.17,0.17])g.add(softBox(0.5,0.035,0.02,steel,[0,0.02,z],0.008));
+  for(const x of [-0.24,0.05,0.24])g.add(softBox(0.02,0.035,0.34,steel,[x,0.02,0],0.008));
+  g.add(softBox(0.19,0.035,0.018,steel,[0.145,0.02,0],0.008));
+  const rice=ball(0.07,C.paper,[-0.1,0.055,0.02],1);rice.scale.y=0.6;
+  g.add(rice,softBox(0.11,0.035,0.065,C.wood,[0.14,0.03,0.08]),ball(0.035,C.leaf,[0.15,0.055,-0.08],0));return g;
 }
 
 /** Mobil kecil. Plat merah untuk mobil dinas. */
@@ -161,10 +140,12 @@ export function car(color: string = "#3b6fb5", official = false) {
         const mesh = o as THREE.Mesh;
         if (!mesh.isMesh) return;
         const mt = (mesh.material as THREE.MeshStandardMaterial).clone();
+        mt.userData.sharedResource = false;
         mt.color.set("#3a332d");
         mesh.material = mt;
       });
     }
+    if (official) { m.add(box(0.014,0.035,0.1,C.merah,[0.31,0.08,0])); }
     if (official) m.add(box(0.06, 0.03, 0.06, mat("#2a6bff", { emissive: "#2a6bff", emissiveIntensity: 2 }), [0, 0.27, 0])); // strobo
     return m;
   }
@@ -187,7 +168,7 @@ function proceduralCar(color: string, official: boolean) {
 }
 
 export function streetLamp() {
-  const m = model("lampuJalan", 1.15); // tinggi 0.96 KayKit -> ~1.1 seperti lampu lama
+  const m = model("lampuJalan", 1.45); // tinggi 0.96 KayKit -> ~1.1 seperti lampu lama
   if (m) {
     m.name = "lampu-jalan";
     return m;
@@ -200,9 +181,9 @@ export function streetLamp() {
 }
 
 export function pinjolPhone() {
-  const tex = textTexture(["CAIR 5 MENIT", "BUNGA 5 TURUNAN"], { bg: "#0b0f14", fg: "#2fe07a", w: 256, h: 448 });
+  const tex = textTexture(["CAIR 5 MENIT", "BUNGA 5 TURUNAN"], { bg: "#0b0f14", fg: "#9cbb88", w: 256, h: 448 });
   return group("hp-pinjol",
-    box(0.2, 0.36, 0.02, C.ink),
+    softBox(0.2, 0.36, 0.02, C.ink, [0,0,0], 0.012),
     texturedPlane(0.18, 0.32, tex, [0, 0.18, 0.011], [0, 0, 0], false),
   );
 }

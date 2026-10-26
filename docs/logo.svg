@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 180" role="img" aria-label="+62WNIPOLY">
+  <defs>
+    <pattern id="tape" width="32" height="20" patternUnits="userSpaceOnUse" patternTransform="skewX(-45)">
+      <rect width="16" height="20" fill="#15110c"/>
+    </pattern>
+    <clipPath id="card"><rect width="640" height="180" rx="20"/></clipPath>
+  </defs>
+  <g clip-path="url(#card)">
+    <rect width="640" height="180" fill="#15110c"/>
+    <rect x="0" y="160" width="640" height="20" fill="#ffc61a"/>
+    <path d="M0 160h640v20H0z" fill="url(#tape)"/>
+  </g>
+  <g transform="translate(36 112) rotate(-4)">
+    <rect x="0" y="-70" width="150" height="86" rx="8" fill="#ffc61a"/>
+    <text x="75" y="0" text-anchor="middle" font-family="Impact, 'Haettenschweiler', 'Arial Narrow Bold', 'Arial Black', sans-serif" font-size="78" fill="#15110c">+62</text>
+  </g>
+  <text x="206" y="118" font-family="Impact, 'Haettenschweiler', 'Arial Narrow Bold', 'Arial Black', sans-serif" font-size="96" letter-spacing="1" fill="#f4ecd8">WNI<tspan fill="#ffc61a">POLY</tspan></text>
+</svg>

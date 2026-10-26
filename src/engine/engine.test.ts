@@ -76,7 +76,7 @@ describe("invarian selama permainan", () => {
       expect(end.round).toBeLessThanOrEqual(RULES.maxRounds);
       expect(end.phase).toBe("over");
     }
-  }, 60_000);
+  }, Number(process.env.WNIPOLY_SIM_TIMEOUT_MS) || 60_000);
 });
 
 describe("keseimbangan (simulasi bot)", () => {
@@ -92,5 +92,5 @@ describe("keseimbangan (simulasi bot)", () => {
       expect(rate).toBeGreaterThan(18);
       expect(rate).toBeLessThan(33);
     }
-  }, 120_000);
+  }, Number(process.env.WNIPOLY_SIM_TIMEOUT_MS) || 120_000);
 });

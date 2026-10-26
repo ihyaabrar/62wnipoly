@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/fonts/BarlowCondensed-Bold.ttf") format("truetype");
+  font-weight: 700 900;
+  font-display: swap;
+}
 :root {
   --bg: #12151b;
   --panel: #1b1f27;

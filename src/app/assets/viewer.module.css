@@ -1,0 +1,246 @@
+.root {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  height: 100dvh;
+  background: var(--bg);
+}
+.sidebar {
+  overflow: auto;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 20px 12px;
+}
+.sidebar h1 {
+  font-size: 20px;
+  margin: 0;
+}
+.sidebar h1 span {
+  color: var(--accent);
+}
+.sidebar h1 small {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.sidebar p {
+  font-size: 13px;
+  color: var(--muted);
+}
+.search {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 10px;
+  color: var(--text);
+  border-radius: 8px;
+  margin: 4px 0 12px;
+}
+.sidebar h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  color: var(--muted);
+  margin: 20px 8px 8px;
+}
+.sidebar nav button {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: none;
+  color: var(--text);
+  padding: 9px 10px;
+  margin: 2px 0;
+  border-radius: 7px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+.sidebar nav button:hover {
+  background: #303741;
+}
+.sidebar nav button.selected {
+  background: var(--accent);
+  color: #25251f;
+}
+.stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+.toolbar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.toolbar button,
+.toolbar select,
+.inspector button {
+  background: #252b33;
+  color: var(--text);
+  border: 1px solid #4b5058;
+  border-radius: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.toolbar button:disabled,
+.inspector button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.inspector {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  right: 16px;
+  padding: 14px 16px;
+  border: 1px solid #52564f;
+  background: #1b2026ed;
+  border-radius: 12px;
+  max-height: 40%;
+  overflow: auto;
+}
+.heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.heading > div {
+  flex: 1;
+}
+.heading small {
+  color: var(--accent);
+  font-size: 12px;
+}
+.heading h2 {
+  margin: 2px 0 6px;
+  font-size: 20px;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+}
+.controls input {
+  width: 110px;
+  accent-color: var(--accent);
+}
+.stats {
+  font-size: 12px;
+  color: #d0cebf;
+  margin: 10px 0 3px;
+  font-variant-numeric: tabular-nums;
+}
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 3px 0;
+}
+.inspector button {
+  padding: 6px 10px;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (max-width: 700px) {
+  .root {
+    grid-template-columns: 1fr;
+    grid-template-rows: 160px minmax(0, 1fr);
+  }
+  .sidebar {
+    padding: 10px 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar h1 {
+    font-size: 16px;
+  }
+  .sidebar h1 small,
+  .sidebar > p {
+    display: none;
+  }
+  .search {
+    margin: 6px 0;
+    padding: 7px;
+  }
+  .sidebar nav {
+    display: flex;
+    gap: 12px;
+    overflow: auto;
+  }
+  .sidebar nav section {
+    display: flex;
+    gap: 4px;
+  }
+  .sidebar h2 {
+    display: none;
+  }
+  .sidebar nav button {
+    white-space: nowrap;
+    width: auto;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+  .toolbar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 5px;
+  }
+  .toolbar button,
+  .toolbar select {
+    font-size: 11px;
+    padding: 7px;
+  }
+  .inspector {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 10px;
+    max-height: 38%;
+  }
+  .heading h2 {
+    font-size: 16px;
+  }
+  .controls {
+    gap: 8px;
+  }
+  .controls input {
+    width: 75px;
+  }
+  .stats {
+    font-size: 11px;
+  }
+}
+
+.stage {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+.inspector {
+  position: relative;
+  inset: auto;
+  max-height: 235px;
+  margin: 0 12px 12px;
+}
+.stage > div:first-child {
+  min-height: 0;
+}
