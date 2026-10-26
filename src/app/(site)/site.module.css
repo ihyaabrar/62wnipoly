@@ -642,6 +642,7 @@
 
 .footerInner nav a {
   min-height: 44px;
+  padding-inline: 8px;
   display: inline-flex;
   align-items: center;
   text-underline-offset: 4px;
@@ -1008,8 +1009,13 @@
 }
 
 .disaster header small {
+  display: inline-block;
   font-weight: 900;
   font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #15110c;
+  color: var(--krem);
 }
 
 .disaster h2 {

@@ -104,12 +104,32 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
 
   useEffect(() => unlockAudio(), []);
 
+  // Menu Pengaturan menutup saat mengetuk di luarnya atau menekan Escape.
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (e: Event) => {
+      const m = menuRef.current;
+      if (!m?.open) return;
+      if (e.type === "keydown" ? (e as KeyboardEvent).key === "Escape" : !m.contains(e.target as Node)) m.open = false;
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, []);
+
   // Musik latar: mulai saat main, ikut Level Krisis, mereda saat sinematik atau layar aturan/kartu terbuka.
   useEffect(() => {
     startMusic();
     return () => stopMusic(0.4);
   }, []);
   useEffect(() => setMusicCrisis(state.crisis), [state.crisis]);
+  // Panel info petak ditutup saat popup lain (kartu, aturan, layar akhir) mengambil layar.
+  useEffect(() => {
+    if (shown || showRules || state.phase === "over") setInspect(null);
+  }, [shown, showRules, state.phase]);
   useEffect(() => duckMusic(fx.length > 0 || showRules || !!shown), [fx.length, showRules, shown]);
 
   const me = state.players.find((p) => !p.bot);
@@ -443,7 +463,7 @@ export function Play({ setup, onExit, onRestart }: { setup: GameSetup; onExit: (
         <button type="button" className={css.ghost} onClick={() => setShowRules(true)} aria-label="Cara bertahan (aturan)" title="Cara bertahan">
           ?
         </button>
-        <details className={css.menu}>
+        <details className={css.menu} ref={menuRef}>
           <summary className={css.ghost}>
             <span className={css.wide}>Pengaturan</span>
             <span className={css.narrow}>Menu</span>
