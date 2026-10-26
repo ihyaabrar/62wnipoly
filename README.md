@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="docs/logo.svg" alt="+62WNIPOLY" width="560">
 </p>
 
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://62wnipoly.vercel.app"><img alt="Main sekarang" src="https://img.shields.io/badge/MAIN%20SEKARANG-62wnipoly.vercel.app-ffc61a?style=for-the-badge&labelColor=15110c"></a>
+  <a href="https://wnipoly.vercel.app"><img alt="Main sekarang" src="https://img.shields.io/badge/MAIN%20SEKARANG-wnipoly.vercel.app-ffc61a?style=for-the-badge&labelColor=15110c"></a>
 </p>
 
 <p align="center">
@@ -22,11 +22,11 @@
 </p>
 
 <p align="center">
-  <a href="#tentang">Tentang</a> ·
-  <a href="#cara-main">Cara main</a> ·
-  <a href="#fitur">Fitur</a> ·
-  <a href="#teknologi">Teknologi</a> ·
-  <a href="#menjalankan-sendiri">Menjalankan sendiri</a> ·
+  <a href="#tentang">Tentang</a> Â·
+  <a href="#cara-main">Cara main</a> Â·
+  <a href="#fitur">Fitur</a> Â·
+  <a href="#teknologi">Teknologi</a> Â·
+  <a href="#menjalankan-sendiri">Menjalankan sendiri</a> Â·
   <a href="#kredit">Kredit</a>
 </p>
 
