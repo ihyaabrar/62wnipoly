@@ -1,4 +1,4 @@
-# Audio +62WNIPOLY
+﻿# Audio +62WNIPOLY
 
 Semua suara disintesis dengan Web Audio: tanpa file audio, unduhan nol, dan nada bisa mengikuti keadaan game.
 
@@ -10,17 +10,22 @@ Semua suara disintesis dengan Web Audio: tanpa file audio, unduhan nol, dan nada
 - Penutup menang dan gugur hanya empat nada pendek, dan kalah memakai suara yang sama dengan pemain gugur di tengah game.
 - Satu tombol bisukan untuk semuanya, tanpa volume terpisah.
 
-## Pembaruan: musik rekaman asli
+## Pembaruan: lagu modern CC0
 
-Musik sintesis pertama dinilai kurang enak, jadi musik latar sekarang memakai rekaman gamelan asli:
+Musik sintesis pertama dan rekaman gamelan dinilai kurang cocok, jadi musik latar sekarang berupa tiga lagu modern berlisensi **CC0** dari OpenGameArt (rincian di `public/music/CREDITS.txt`):
 
-- "Gamelan angka 1" (2:13) dan "Gamelan angka 2" (3:56), abdi dalem Keraton Yogyakarta, direkam RTB45 tahun 2014, lisensi **CC BY 4.0** (cukup mencantumkan nama, sudah ada di README dan `public/music/CREDITS.txt`).
-- Dipilih setelah mencari di Wikimedia Commons. Rekaman bergaya gamelan lain berlisensi CC BY-SA (mewajibkan lisensi yang sama untuk turunannya) atau Artistic 2.0, jadi tidak dipakai. Tidak ada rekaman gamelan CC0 penuh yang ditemukan.
-- Rekaman berakhir dengan memudar, jadi diputar bergantian dengan crossfade 3 detik. Angka 1 untuk Level Krisis 1-3, angka 2 (lebih padat) untuk level 4 ke atas, ganti langsung saat ambang terlewati.
-- Kecepatan naik sampai 4,8% saat krisis (nada bergeser kurang dari satu semiton), ditambah dengung sintesis di level 4 ke atas.
-- Volume angka 2 disamakan dengan angka 1 (rekamannya sekitar 40% lebih keras).
-- Kalau browser tidak bisa memutar Ogg Vorbis atau berkas gagal dimuat, musik sintesis di bawah dipakai sebagai cadangan.
+| Level Krisis | Lagu | Suasana | Energi (RMS) |
+|---|---|---|---|
+| 1-3 | Chill lofi inspired [loop edit] (omfgdude, qubodup) | Tenang, loop mulus | 0,14 |
+| 4-6 | Cyber March (iamoneabe) | Synthwave sinematik yang membangun | 0,12, naik ke 0,15 |
+| 7 ke atas | Drive (Zane Little Music) | Padat dan mendesak | 0,19 |
 
+- Dipilih dari sekitar 16 kandidat CC0 yang lisensinya dicek langsung di halaman tiap lagu. Delapan diunduh dan diukur durasi, energi, dan ujungnya di browser.
+- Lagu lofi diulang mulus tanpa jeda. Dua lainnya berakhir memudar, jadi diulang dengan crossfade lima detik.
+- Pindah tingkat dilakukan langsung saat Level Krisis melewati ambang, dengan crossfade tiga detik.
+- Volume disamakan lewat gain per lagu. Kecepatan putar tidak diubah supaya nadanya tetap.
+- Kalau browser gagal memutar berkasnya, musik sintesis di bawah dipakai sebagai cadangan.
+- Total berkas musik sekitar 11,8 MB, dimuat per lagu saat dibutuhkan.
 ## Musik sintesis (cadangan) dan efek yang ditambahkan
 
 | Bagian | Isi |

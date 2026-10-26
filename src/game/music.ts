@@ -43,22 +43,24 @@ let drone: { g: GainNode; oscs: OscillatorNode[] } | null = null;
 let ducked = false;
 
 /**
- * Rekaman gamelan asli (CC BY 4.0, lihat public/music/CREDITS.txt). Dua rekaman berakhir dengan memudar,
- * jadi diputar bergantian dengan crossfade. Yang kedua lebih padat, dipakai saat Level Krisis tinggi.
- * Kalau browser tidak bisa memutar Ogg, musik sintesis di bawah yang dipakai.
+ * Tiga lagu modern berlisensi CC0 (lihat public/music/CREDITS.txt), satu per tingkat Level Krisis:
+ * tenang (lofi, loop mulus) -> sinematik (synthwave yang membangun) -> padat dan mendesak.
+ * Lagu yang berakhir memudar diulang dengan crossfade. Gain menyamakan kerasnya (diukur dari RMS).
+ * Kalau browser tidak bisa memutar berkasnya, musik sintesis di bawah yang dipakai.
  */
 const TRACKS = [
-  { url: "/music/gamelan-keraton-1.ogg", gain: 1 },
-  { url: "/music/gamelan-keraton-2.ogg", gain: 0.72 }, // lebih keras di rekamannya: disamakan
+  { url: "/music/chill-lofi-loop.ogg", gain: 0.85, loop: true },
+  { url: "/music/cyber-march.mp3", gain: 1, loop: false },
+  { url: "/music/drive.mp3", gain: 0.63, loop: false },
 ];
 const FADE_IN = 3;
-const FADE_OUT = 6;
-const wanted = () => (crisis >= 4 ? 1 : 0);
-const rate = () => 1 + Math.min(crisis - 1, 8) * 0.006; // sedikit lebih cepat saat krisis, nada bergeser kurang dari satu semiton
+const FADE_OUT = 5;
+const wanted = () => (crisis >= 7 ? 2 : crisis >= 4 ? 1 : 0);
+const rate = () => 1; // lagu modern bernada tetap: kecepatan tidak diubah
 
 type Voice = { src: AudioBufferSourceNode; g: GainNode; index: number };
-const buffers: (AudioBuffer | null | "gagal")[] = [null, null];
-const loading: (Promise<void> | null)[] = [null, null];
+const buffers: (AudioBuffer | null | "gagal")[] = TRACKS.map(() => null);
+const loading: (Promise<void> | null)[] = TRACKS.map(() => null);
 let mode: "memuat" | "file" | "sintesis" = "memuat";
 let voice: Voice | null = null;
 let nextCheck: ReturnType<typeof setTimeout> | null = null;
@@ -97,20 +99,30 @@ function playTrack(i: number) {
   const len = b.duration / rate();
   g.gain.setValueAtTime(0, t);
   g.gain.linearRampToValueAtTime(level, t + FADE_IN);
-  g.gain.setValueAtTime(level, t + len - FADE_OUT);
-  g.gain.linearRampToValueAtTime(0, t + len);
   src.connect(g).connect(duck);
+  if (nextCheck) clearTimeout(nextCheck);
+  nextCheck = null;
+  if (TRACKS[i].loop) {
+    src.loop = true; // loop mulus: tanpa fade keluar, ganti hanya saat tingkat krisis berubah
+  } else {
+    g.gain.setValueAtTime(level, t + len - FADE_OUT);
+    g.gain.linearRampToValueAtTime(0, t + len);
+    // Mulai putaran berikutnya (lagu yang sama atau tingkat baru) sebelum yang ini habis: crossfade.
+    nextCheck = setTimeout(() => advance(), Math.max(1000, (len - FADE_OUT - 1) * 1000));
+  }
   src.start(t);
   voice = { src, g, index: i };
-  // Mulai track berikutnya sebelum yang ini habis (crossfade); pilih sesuai Level Krisis saat itu.
-  if (nextCheck) clearTimeout(nextCheck);
-  nextCheck = setTimeout(() => advance(), Math.max(1000, (len - FADE_OUT - 1) * 1000));
+  // Siapkan lagu tingkat berikutnya di latar (setelah 20 detik, agar tidak berebut unduhan dengan lagu pertama).
+  const next = i + 1;
+  if (next < TRACKS.length) setTimeout(() => void load(next), 20000);
 }
 
 async function advance(forceIndex?: number) {
-  const i = forceIndex ?? (voice ? (voice.index === wanted() ? 1 - wanted() : wanted()) : wanted());
+  const i = forceIndex ?? wanted();
   await load(i);
   if (buffers[i] === "gagal") return fallback();
+  // Pemuatan butuh waktu: kalau Level Krisis sudah pindah tingkat lagi, jangan putar lagu yang sudah usang.
+  if (i !== wanted() || !timer) return;
   if (timer || mode === "file") playTrack(i);
 }
 
@@ -241,7 +253,6 @@ export function startMusic() {
     if (buffers[wanted()] === "gagal") return fallback();
     mode = "file";
     playTrack(wanted());
-    void load(1 - wanted()); // siapkan track lainnya di latar
   });
 }
 

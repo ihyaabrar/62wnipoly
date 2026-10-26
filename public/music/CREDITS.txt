@@ -1,15 +1,24 @@
 Musik latar +62WNIPOLY
 
-gamelan-keraton-1.ogg  "Gamelan angka 1 Kraton Ngayogyakarta"
-gamelan-keraton-2.ogg  "Gamelan angka 2 Kraton Ngayogyakarta"
+Semua lagu berlisensi CC0 (domain publik), diambil dari OpenGameArt. Kredit tidak diwajibkan,
+dicantumkan sebagai terima kasih.
 
-Rekaman gamelan Jawa oleh para penabuh Keraton Ngayogyakarta Hadiningrat (Keraton Yogyakarta).
-Perekam: RTB45, 6 November 2014.
-Sumber: Wikimedia Commons
-  https://commons.wikimedia.org/wiki/File:Gamelan_angka_1_Kraton_Ngayogyakarta.ogg
-  https://commons.wikimedia.org/wiki/File:Gamelan_angka_2_Kraton_Ngayogyakarta.ogg
-Lisensi: Creative Commons Attribution 4.0 International (CC BY 4.0)
-  https://creativecommons.org/licenses/by/4.0/
+chill-lofi-loop.ogg  "Chill lofi inspired [loop edit]"
+  Musik asli: omfgdude. Edit loop mulus: qubodup.
+  https://opengameart.org/content/chill-lofi-inspired-loop-edit
+  Dipakai untuk Level Krisis 1-3.
 
-Berkas digunakan apa adanya (tanpa diedit); pemutaran di game menambahkan fade masuk/keluar,
-penyamaan volume, dan sedikit perubahan kecepatan menurut Level Krisis.
+cyber-march.mp3  "Cyber March"
+  iamoneabe
+  https://opengameart.org/content/cyber-march
+  Dipakai untuk Level Krisis 4-6.
+
+drive.mp3  "Drive"
+  Zane Little Music
+  https://opengameart.org/content/drive-0
+  Dipakai untuk Level Krisis 7 ke atas.
+
+Lisensi: CC0 1.0 Universal  https://creativecommons.org/publicdomain/zero/1.0/
+
+Berkas digunakan apa adanya; pemutaran di game menambahkan fade masuk/keluar, crossfade,
+dan penyamaan volume.

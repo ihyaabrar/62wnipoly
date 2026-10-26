@@ -102,7 +102,7 @@ Situsnya juga punya halaman **Glosarium** (semua kartu dan 40 petak), **Peran**,
 | Teks 3D | [troika-three-text](https://github.com/protectwise/troika) | Judul petak tajam (SDF) dari jarak dan sudut berapa pun |
 | Model 3D | glTF dari [KayKit](https://kaylousberg.com) dan [Kenney](https://kenney.nl) (CC0) | Mobil, gedung kota, perabot jalan, kereta; atlas warnanya diredupkan agar senada |
 | Aset prosedural | Geometri Three.js buatan sendiri | Monas, gedung dewan, gunung, banjir, lahar, asap, dadu, kartu |
-| Suara | Web Audio API | Efek suara disintesis tanpa file audio; musik latar berupa rekaman gamelan asli yang berganti sesuai Level Krisis |
+| Suara | Web Audio API | Efek suara disintesis tanpa file audio; musik latar berupa tiga lagu CC0 yang berganti sesuai Level Krisis |
 | Tes | [Vitest 5](https://vitest.dev) | 186 tes: aturan, simulasi keseimbangan, aset |
 | Hosting | [Vercel](https://vercel.com) | Deploy otomatis tiap push ke `main` |
 
@@ -160,7 +160,7 @@ docs/         riset dan audit aset, logo, tangkapan layar
 
 - Model 3D [KayKit City Builder Bits](https://kaylousberg.itch.io/city-builder-bits) dan KayKit Medieval Hexagon oleh Kay Lousberg, lisensi CC0.
 - [Kenney Train Kit](https://kenney.nl/assets/train-kit) oleh Kenney, lisensi CC0.
-- Musik latar: rekaman gamelan Jawa oleh abdi dalem Keraton Yogyakarta, direkam oleh RTB45 ([angka 1](https://commons.wikimedia.org/wiki/File:Gamelan_angka_1_Kraton_Ngayogyakarta.ogg), [angka 2](https://commons.wikimedia.org/wiki/File:Gamelan_angka_2_Kraton_Ngayogyakarta.ogg)), lisensi [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Rincian di [public/music/CREDITS.txt](public/music/CREDITS.txt).
+- Musik latar (CC0): [Chill lofi inspired](https://opengameart.org/content/chill-lofi-inspired-loop-edit) oleh omfgdude (loop oleh qubodup), [Cyber March](https://opengameart.org/content/cyber-march) oleh iamoneabe, dan [Drive](https://opengameart.org/content/drive-0) oleh Zane Little Music. Rincian di [public/music/CREDITS.txt](public/music/CREDITS.txt).
 - Font [Barlow Condensed](https://github.com/jpt/barlow) oleh The Barlow Project Authors, SIL Open Font License 1.1.
 
 Rincian sumber dan status tiap aset ada di [docs/riset-aset.md](docs/riset-aset.md).
