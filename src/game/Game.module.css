@@ -41,7 +41,7 @@
 
 /* Huruf spanduk (sama dengan situs) untuk logo, judul, dan tombol utama. */
 .brand {
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-weight: 400;
   font-size: 22px;
   letter-spacing: 0.5px;
@@ -416,7 +416,7 @@
 
 .rules h2 {
   margin: 0 0 4px;
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-weight: 400;
   font-size: 30px;
 }
@@ -737,7 +737,7 @@
   border: 0;
   border-radius: 10px;
   padding: 14px;
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-size: 21px;
   font-weight: 400;
   letter-spacing: 0.5px;
@@ -940,7 +940,7 @@
 
 .card h2 {
   margin: 4px 0 10px;
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-weight: 400;
   font-size: 28px;
   letter-spacing: 0.3px;
@@ -1039,7 +1039,7 @@
 
 .stamp {
   display: inline-block;
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-size: 44px;
   letter-spacing: 3px;
   line-height: 1;
@@ -1060,7 +1060,7 @@
 
 .over h2 {
   margin: 14px 18px 4px;
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-weight: 400;
   font-size: 30px;
 }
@@ -1098,7 +1098,7 @@
 }
 
 .rankNo {
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-size: 18px;
   color: var(--muted);
 }
@@ -1197,7 +1197,7 @@
 }
 
 .hero {
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-size: clamp(44px, 9vw, 80px);
   font-weight: 400;
   margin: 8px 0 0;
@@ -1275,7 +1275,7 @@ fieldset.field {
 }
 
 .charName {
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  font-family: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   font-size: 22px;
   letter-spacing: 0.3px;
 }

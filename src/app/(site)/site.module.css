@@ -2,7 +2,7 @@
  * Situs +62WNIPOLY. Arah: poster demo dan rambu darurat.
  * Palet: aspal hangat (latar), krem kertas spanduk (teks), kuning rambu (aksen utama), oranye lahar (musibah/bahaya).
  * Motif: pita garis kuning-hitam seperti garis polisi dan pembatas lokasi bencana.
- * Judul: huruf kondensed tebal (Impact) seperti tulisan spanduk; isi: font sistem agar mudah dibaca.
+ * Judul: huruf kondensed tebal (Barlow Condensed, bawaan di public/fonts, sama di semua perangkat) seperti tulisan spanduk; isi: font sistem agar mudah dibaca.
  */
 .shell {
   --aspal: #15110c;
@@ -13,7 +13,7 @@
   --redup: #bdb19b;
   --kuning: #ffc61a;
   --lava: #ff6a2b;
-  --spanduk: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Black", sans-serif;
+  --spanduk: "Barlow Condensed", Impact, "Arial Narrow Bold", sans-serif;
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
