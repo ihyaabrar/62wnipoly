@@ -5,13 +5,23 @@
   font-display: swap;
 }
 :root {
-  --bg: #12151b;
-  --panel: #1b1f27;
-  --line: #2c323d;
-  --text: #ece7db;
-  --muted: #9aa1ad;
-  --accent: #e3b341;
-  --danger: #e5484d;
+  /* Palet tunggal: aspal hangat, krem, kuning rambu. Merah dan hijau dilembutkan untuk latar gelap. */
+  --aspal: #15110c;
+  --panel: #211b14;
+  --panel2: #2b2319;
+  --garis: #3d3226;
+  --krem: #f4ecd8;
+  --redup: #bdb19b;
+  --kuning: #ffc61a;
+  --lava: #ff6a2b;
+  --bahaya: #ff7a5c;
+  --baik: #8fd39c;
+  --bg: var(--aspal);
+  --line: var(--garis);
+  --text: var(--krem);
+  --muted: var(--redup);
+  --accent: var(--kuning);
+  --danger: var(--bahaya);
 }
 
 * { box-sizing: border-box; }

@@ -3,11 +3,7 @@
  * Merah/hijau dibuat lembut supaya naik-turun angka tetap terbaca tanpa menyilaukan di atas papan 3D.
  */
 .root {
-  --text: #f4ecd8;
-  --muted: #bdb19b;
-  --accent: #ffc61a;
-  --danger: #ff7a5c;
-  --good: #8fd39c;
+  --good: var(--baik);
   position: relative;
   height: 100dvh;
   width: 100%;
@@ -395,7 +391,7 @@
 
 /* Angka yang mendekati batas gugur: merah dan berdenyut. */
 .danger {
-  color: #ff7a5c !important;
+  color: var(--danger) !important;
   animation: dangerPulse 1s ease-in-out infinite;
 }
 
@@ -473,7 +469,7 @@
 
 .evBad {
   background: rgba(255, 122, 92, 0.16);
-  color: #ffa184;
+  color: var(--danger);
 }
 
 /* Lapisan warna sinematik bencana (di atas kanvas, di bawah HUD) */
@@ -828,7 +824,7 @@
 
 .k_bad,
 .k_out {
-  color: #ffa184;
+  color: var(--danger);
 }
 
 .k_disaster {
@@ -1027,7 +1023,7 @@
 }
 
 .overLose {
-  --accent-end: #ff7a5c;
+  --accent-end: var(--danger);
 }
 
 .over::before {
@@ -1338,7 +1334,7 @@ fieldset.field {
 }
 
 .rawan {
-  color: #ffa184;
+  color: var(--danger);
 }
 
 .pair {

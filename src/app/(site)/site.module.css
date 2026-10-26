@@ -526,7 +526,7 @@
 
 .cardM {
   background: #1d1f24;
-  color: #f2ede1;
+  color: var(--krem);
 }
 
 .cardK small,
@@ -537,7 +537,7 @@
 }
 
 .cardM small {
-  color: #ff7a7a;
+  color: var(--bahaya);
 }
 
 .cardK h3,
@@ -818,7 +818,7 @@
 }
 
 .cardM .effects b {
-  color: #ff8a5c;
+  color: var(--bahaya);
 }
 
 .fact {
